@@ -1,11 +1,10 @@
 from flask import Flask, jsonify
 from flask_cors import CORS
-from flask_sqlalchemy import SQLAlchemy 
+from extensions import mongo 
 from dotenv import load_dotenv
 import os 
 
 load_dotenv()
-db = SQLAlchemy()
 
 def create_app():
     app = Flask(__name__)
@@ -14,10 +13,11 @@ def create_app():
     app.config['SECRET_KEY'] = secret
 
     db_url = os.getenv('DATABASE_URL', 'sqlite:///grepship.db') # Reading Database Url from env
-    app.config['SQLALCHEMY_DATABASE_URI'] = db_url 
 
-    db.init_app(app) # calling 
     CORS(app, origins=["http://localhost:3000"]) # Calling
+
+    app.config['MONGO_URI'] = os.getenv('MONGO_URI', 'mongodb://localhost:27017/grepship')
+    mongo.init_app(app)
 
     @app.route("/api/health", methods=['GET']) # Routing /api/health
     def  health_check():
