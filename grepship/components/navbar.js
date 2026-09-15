@@ -1,4 +1,9 @@
+"use client"
+import {useState, useEffect} from "react"
 export default function Navbar(){
+
+	const [profilepic, setprofilepic] = useState(null)
+
 	return (
 		<nav className="flex fixed top-0 left-0 right-0 h-30  bg-[#26351F] color-[#FFF8E7]">
 			<div className="items-center h-full w-1/5 flex">
@@ -6,7 +11,7 @@ export default function Navbar(){
 					GrepShip
 				</a>
 			</div>
-			<div className="flex items-center justify-center w-1/3">
+			<div className="flex items-center justify-center flex-1">
 				<input className="pl-3 pr-10 bg-[#35452C] rounded-xl w-full h-1/3" placeholder="Harvest Friend" type="text"/>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -23,6 +28,21 @@ export default function Navbar(){
 					/>
 				</svg>
 			</div>
+			{profilepic ? (
+				<div>
+				<div>
+					<button>inbox</button>
+				</div>
+				<div>
+					<div><img src={profilepic} /></div>
+				</div>
+				</div>
+			) : (
+				<div className="w-1/5 flex justify-between items-center p-10">
+					<button className="bg-[#FFF8E7] text-[#26351F] hover:bg-[#E8F0D8] p-2 rounded-xl">Log In</button>
+					<button className="bg-[#E6A82E] text-[#26351F] hover:bg-[#F0B83D] p-2 rounded-xl">Sign Up</button>
+				</div>
+			)}
 		</nav>
 	)
 }
