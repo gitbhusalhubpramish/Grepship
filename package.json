@@ -1,0 +1,21 @@
+{
+  "name": "grepship",
+  "version": "1.0.0",
+  "description": "Grepship is a online open-source communication platform developed to complete the goal of open commuication without restricted.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gitbhusalhubpramish/Grepship.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/gitbhusalhubpramish/Grepship/issues"
+  },
+  "homepage": "https://github.com/gitbhusalhubpramish/Grepship#readme"
+}
