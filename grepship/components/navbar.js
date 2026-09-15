@@ -3,6 +3,19 @@ import {useState, useEffect} from "react"
 export default function Navbar(){
 
 	const [profilepic, setprofilepic] = useState(null)
+	useEffect(()=>{
+		async function loadSession(){
+			try {
+				const res = await fetch("/api/me/auth")
+				const data = await res.json()
+				
+				setprofilepic(data.user.profilepic)
+			} catch (err){
+				console.log(err)
+			}
+		}
+		loadSession()
+	}, [])
 
 	return (
 		<nav className="flex fixed top-0 left-0 right-0 h-30  bg-[#26351F] color-[#FFF8E7]">
