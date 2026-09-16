@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request, session 
-from models.user import create_user, find_user_by_email, find_user_by_username
+from models.user import create_user, find_user_by_email, find_user_by_username, find_user_by_id
 from utils.security import hash_password, verify_password
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/api/auth")
@@ -52,5 +52,31 @@ def login():
             "username": user["username"],
             "email": user["email"],
             "profile_pic": user['profile_pic']
+        }
+    }), 200
+
+@auth_bp.route('/logout', methods=['POST'])
+def logout():
+    session.clear()
+    return jsonify({"success": True}), 200
+
+@auth_bp.route("/me", methods=["GET"])
+def me():
+    user_id = session.get("user_id")
+    if not user_id:
+        return jsonify({"success": False, "error": "Not authenticated"}), 401
+    
+    user = find_user_by_id(user_id)
+    if not user:
+        session.clear()
+        return jsonify({"success": False, "error": "Not authenticated"}), 401
+    
+    return jsonify({
+        "success": True,
+        "user": {
+            "id": str(user["_id"]),
+            "username": user["username"],
+            "email": user['email'],
+            "profile_pic": user["profile_pic"],
         }
     }), 200
