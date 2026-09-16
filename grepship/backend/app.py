@@ -4,11 +4,14 @@ from dotenv import load_dotenv
 from pathlib import Path 
 import os 
 from flask import Flask, jsonify 
+from routes.auth import auth_bp
+
+app = Flask(__name__)
+app.register_blueprint(auth_bp)
 
 load_dotenv(Path(__file__).parent / ".env")
 
 def create_app(): # Main function for all work 
-    app = Flask(__name__)
 
     app.config[ "SECRET_KEY"] = os.getenv("SECRET_KEY")
     app.config["MONGO_URI"] = os.getenv(
