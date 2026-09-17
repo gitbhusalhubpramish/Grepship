@@ -14,6 +14,19 @@ export default function Signup(){
 			alert("password didn't matched")
 		}
 		const res = await fetch("api/register", {method: "POST", headers:{"Content-Type":"application/json"}, body: JSON.stringfy({form})})
+		
+		if (res.status===201){
+			alert("signup successful")
+		}
+		if (res.status===500){
+			alert("server error")
+			
+		}
+		else if (res.status===400){
+			alert(res.message)
+		}
+		
+		
 	}
 	return (
 		<div className="bg-[#FFF8E7] h-screen w-screen pt-30 flex justify-center items-center">
