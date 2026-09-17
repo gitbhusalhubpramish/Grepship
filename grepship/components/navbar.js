@@ -6,7 +6,7 @@ export default function Navbar(){
 	useEffect(()=>{
 		async function loadSession(){
 			try {
-				const res = await fetch("/api/me/auth")
+				const res = await fetch("/api/auth/me")
 				const data = await res.json()
 				
 				setprofilepic(data.user.profilepic)
