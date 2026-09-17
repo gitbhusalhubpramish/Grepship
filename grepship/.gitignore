@@ -1,18 +1,30 @@
 # Dependencies
 node_modules/
+
+# Python
 venv/
 __pycache__/
+*.py[cod]
 
 # Environment
 .env
+.env.local
 
 # Database
 *.db
 *.sqlite
 *.sqlite3
 
+# Next.js
+.next/
+out/
+build/
+next-env.d.ts
+*.tsbuildinfo
+
 # Logs
 *.log
+npm-debug.log*
 
 # IDE
 .vscode/
@@ -20,5 +32,3 @@ __pycache__/
 
 # OS
 .DS_Store
-
-# etc.
