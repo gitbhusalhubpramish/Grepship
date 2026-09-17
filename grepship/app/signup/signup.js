@@ -15,7 +15,7 @@ export default function Signup(){
 			alert("password didn't matched")
 			return
 		}
-		const res = await fetch("api/register", {method: "POST", headers:{"Content-Type":"application/json"}, body: JSON.stringfy({form})})
+		const res = await fetch("api/auth/register", {method: "POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({form})})
 		
 		if (res.status===201){
 			alert("signup successful")
