@@ -9,6 +9,12 @@ export default function Signup(){
 		const {name,value}=e.target
 		setform((prev)=>({...prev,[name]:value,}))
 	}
+	const handelSubmit = async ()=>{
+		if (form.password !== form.conformpass){
+			alert("password didn't matched")
+		}
+		const res = await fetch("api/register", {method: "POST", headers:{"Content-Type":"application/json"}, body: JSON.stringfy({form})})
+	}
 	return (
 		<div className="bg-[#FFF8E7] h-screen w-screen pt-30 flex justify-center items-center">
 			
