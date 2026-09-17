@@ -3,12 +3,14 @@ from bson import ObjectId
 from datetime import datetime, timezone
 from bson.errors import InvalidId 
 
+DEFAULT_PROFILE_PIC = "/default_profile.png"
+
 def create_user(username, email, password_hash, profile_pic=None):
     result = mongo.db.users.insert_one({               # Creating a result dictionary thing that store the user data  if available 
         'username': username, # Username storing of user 
         'email': email, # email storing of user
         'password_hash': password_hash, # hashed password saving 
-        'profile_pic': profile_pic, # profile pic if needed
+        'profile_pic': profile_pic or DEFAULT_PROFILE_PIC, # profile pic if needed
         'created_at': datetime.now(timezone.utc), # Takes the time 
         'friends': [], # list all the friend at the site
     })
