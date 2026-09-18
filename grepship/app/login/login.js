@@ -16,7 +16,8 @@ export default function Login(){
 					Password: <br/>
 					<input name="password" type="password" className="border-[a7e6a7] border-1 bg-[#e7ffe7] rounded-lg mt-1 mb-2 w-full h-7" placeholder="P@s$word" required/>
 				</label>
-				<p>Not having an account? <Link href="/signup">Signup</Link></p>
+				<button type="submit" className="bg-[#d9822b] cursor-pointer text-[#ffffff] rounded-xl w-full h-10 my-5">Login</button>
+				<p className="font-sm ">Not having an account? <Link className="ml-1 inline text-blue-500 underline" href="/signup">Signup</Link></p>
 			</form>
 		</div>
 	)
