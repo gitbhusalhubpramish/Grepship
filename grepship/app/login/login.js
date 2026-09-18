@@ -14,7 +14,7 @@ export default function Login(){
 	
 	const handelSubmit = async (e)=>{
 		e.preventDefault()
-		const res = await fetch("api/auth/login", {method: "POST", header:{"Content-Type":"application/json"}, body: JSON.stringify({form})})
+		const res = await fetch("api/auth/login", {method: "POST", headers:{"Content-Type":"application/json", "Accept": "application/json"}, body: JSON.stringify({username:form.username, password:form.password})})
 		if (res.status===200){
 			alert("Login successful")
 		}
