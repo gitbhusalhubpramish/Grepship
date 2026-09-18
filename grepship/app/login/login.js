@@ -30,7 +30,7 @@ export default function Login(){
 	}
 	return (
 		<div className="bg-[#FFF8E7] h-screen w-screen pt-30 flex justify-center items-center">
-			<form className="text-[#6B8E3D] bg-[#ffffff] border-[#e4dfc9] border-2 min-w-15 min-h-87 p-5 w-1/5 h-2/3 rounded-3xl" onSubmit={handelSubmit}>
+			<form className="text-[#6B8E3D] bg-[#ffffff] border-[#e4dfc9] border-2 min-w-15 min-h-82 p-5 w-1/5 h-2/3 rounded-3xl" onSubmit={handelSubmit}>
 				<p className="font-bond text-3xl mb-5">Login</p>
 				<label className="w-full my-2">
 					Username: <br/>
@@ -41,7 +41,7 @@ export default function Login(){
 					<input name="password" type="password" className="border-[a7e6a7] border-1 bg-[#e7ffe7] rounded-lg mt-1 mb-2 w-full h-7" placeholder="P@s$word" value={form.password} onChange={(e)=>handelChange(e)} required/>
 				</label>
 				<button type="submit" className="bg-[#d9822b] cursor-pointer text-[#ffffff] rounded-xl w-full h-10 my-5">Login</button>
-				<p className="font-sm ">Not having an account? <Link className="ml-1 inline text-blue-500 underline" href="/signup">Signup</Link></p>
+				<p className="text-sm ">Not having an account? <Link className="ml-1 inline text-blue-500 underline" href="/signup">Signup</Link></p>
 			</form>
 		</div>
 	)
