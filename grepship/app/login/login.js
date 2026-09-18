@@ -4,6 +4,30 @@ import {useState, useEffect} from "react"
 import Link from "next/link"
 
 export default function Login(){
+
+	const [form, setform] = useState({username: "", password:""})
+
+	const handelChange=(e)=>{
+		const {name, value} = e.target
+		setform((prev=>({...prev, [name]:value,})))
+	}
+	
+	const handelSubmit = async (e)=>{
+		e.preventDefault()
+		const res = await fetch("api/auth/login", {method: "POST", header:{"Content-Type":"application/json"}, body: JSON.stringify({form})})
+		if (res.status===200){
+			alert("Login successful")
+		}
+		else if (res.status===500){
+			alert("server error")
+		}
+		else if (res.status===400){
+			alert(res.message)
+		}
+		else {
+			alert("something went wrong")
+		}
+	}
 	return (
 		<div className="bg-[#FFF8E7] h-screen w-screen pt-30 flex justify-center items-center">
 			<form className="text-[#6B8E3D] bg-[#ffffff] border-[#e4dfc9] border-2 min-w-15 min-h-87 p-5 w-1/5 h-2/3 rounded-3xl">
