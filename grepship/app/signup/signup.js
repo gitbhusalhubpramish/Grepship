@@ -1,6 +1,7 @@
 "use client"
 
 import {useState, useEffect} from "react"
+import Link from "next/link"
 
 export default function Signup(){
 	const [form, setform] = useState({username: "", password:"", conformpass: "", email:""})
@@ -33,7 +34,7 @@ export default function Signup(){
 	return (
 		<div className="bg-[#FFF8E7] h-screen w-screen pt-30 flex justify-center items-center">
 			
-			<form className="text-[#6B8E3D] bg-[#FFFFFF] border-[#E4DFC9] border-2 min-w-15 min-h-102 p-5 w-1/5 h-2/3 rounded-3xl" onSubmit={handelSubmit}>
+			<form className="text-[#6B8E3D] m-5 bg-[#FFFFFF] border-[#E4DFC9] border-2 min-w-15 min-h-112 p-5 w-1/5 h-2/3 rounded-3xl" onSubmit={handelSubmit}>
 				<p className="font-bold text-3xl mb-5">Sign Up</p>
 				<label className=" w-full my-2">
 					Username: <br/>
@@ -53,6 +54,8 @@ export default function Signup(){
                                 </label>
 		
 				<button className="bg-[#d9822b] cursor-pointer text-[#FFFFFF] rounded-xl w-full h-10 my-5" type="submit">Join us</button>
+
+				<p className="text-sm">Already have an account? <Link href="/login" className="text-blue-500 underline">Login</Link></p>
 		
 			</form>
 		</div>
