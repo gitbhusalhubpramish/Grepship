@@ -1,7 +1,7 @@
 "use client"
 
 import {useState, useEffect} from "react"
-import Link form "next/link"
+import Link from "next/link"
 
 export default function Login(){
 	return (
