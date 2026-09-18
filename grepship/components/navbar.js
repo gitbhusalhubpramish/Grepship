@@ -1,4 +1,5 @@
 "use client"
+import Link from "next/link"
 import {useState, useEffect} from "react"
 export default function Navbar(){
 
@@ -52,8 +53,8 @@ export default function Navbar(){
 				</div>
 			) : (
 				<div className="w-1/5 flex justify-between items-center p-10">
-					<button className="bg-[#FFF8E7] text-[#26351F] hover:bg-[#E8F0D8] p-2 rounded-xl">Log In</button>
-					<button className="bg-[#E6A82E] text-[#26351F] hover:bg-[#F0B83D] p-2 rounded-xl">Sign Up</button>
+					<Link href="/login"><button className="bg-[#FFF8E7] text-[#26351F] hover:bg-[#E8F0D8] p-2 rounded-xl cursor-pointer">Log In</button></Link>
+					<Link href="/signup"><button className="bg-[#E6A82E] text-[#26351F] hover:bg-[#F0B83D] p-2 rounded-xl cursor-pointer">Sign Up</button></Link>
 				</div>
 			)}
 		</nav>
