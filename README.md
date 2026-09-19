@@ -115,5 +115,4 @@ Grepship is a two-person project built at [Hack Club](https://hackclub.com):
 Pull requests welcome. For major changes, open an issue first.
 
 ## License
-
-MIT — free to use, modify, and distribute.
+Completely free to use.
