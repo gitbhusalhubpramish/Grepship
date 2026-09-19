@@ -1,42 +1,42 @@
 from flask import Blueprint, jsonify, request, session
-from models.user import create_user, find_user_by_email, find_user_by_username, find_user_by_id
+from models.user import create_user, find_user_by_email_or_username, find_user_by_id
 from utils.security import hash_password, verify_password
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/api/auth")
 
 
-@auth_bp.route("/register", methods=["POST"])
+@auth_bp.route("/signup", methods=["POST"])
 def register():
     data = request.get_json()
-    username = data.get("username")
-    email = data.get("email")
-    password = data.get("password")
+    username = (data.get("username") or "").strip()
+    email = (data.get("email") or "").strip().lower()
+    password = data.get('password') or ""
 
     if not username or not email or not password:
         return jsonify({"success": False, "error": "username, email, and password are required"}), 400
 
-    if find_user_by_email(email):
-        return jsonify({"success": False, "error": "Email already in use"}), 409
-
-    if find_user_by_username(username):
+    if find_user_by_email_or_username(username=username):
         return jsonify({"success": False, "error": "Username already taken"}), 409
+    
+    if email and find_user_by_email_or_username(email=email):
+        return jsonify({"success": False, "error": "Email already in use"}), 409
 
     password_hash = hash_password(password)
     user_id = create_user(username, email, password_hash)
     return jsonify({"success": True, "userId": user_id}), 201
-
 
 @auth_bp.route("/login", methods=["POST"])
 def login():
     data = request.get_json()
 
     email = data.get("email")
-    password = data.get("password")
+    username  = (data.get('username') or "").strip()
+    password = data.get("password") or ""
 
-    if not email or not password:
-        return jsonify({"success": False, "error": "email and password are required"}), 400
+    if not username and not password:
+        return jsonify({"success": False, "error": "email or username and password are required"}), 400
 
-    user = find_user_by_email(email)
+    user = find_user_by_email_or_username(username=username)
     if not user:
         return jsonify({"success": False, "error": "Invalid credentials"}), 401
 
@@ -50,7 +50,7 @@ def login():
         "user": {
             "id": str(user["_id"]),
             "username": user["username"],
-            "email": user["email"],
+            "email": user.get('email'),
             "profile_pic": user["profile_pic"],
         }
     }), 200
@@ -60,7 +60,6 @@ def login():
 def logout():
     session.clear()
     return jsonify({"success": True}), 200
-
 
 @auth_bp.route("/me", methods=["GET"])
 def me():
@@ -77,7 +76,7 @@ def me():
         "user": {
             "id": str(user["_id"]),
             "username": user["username"],
-            "email": user["email"],
+            "email": user.get('email') or None,
             "profile_pic": user["profile_pic"],
         }
     }), 200
