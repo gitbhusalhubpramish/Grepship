@@ -12,8 +12,8 @@ def register():
     email = (data.get("email") or "").strip().lower()
     password = data.get('password') or ""
 
-    if not username or not email or not password:
-        return jsonify({"success": False, "error": "username, email, and password are required"}), 400
+    if not username or not password:
+        return jsonify({"success": False, "error": "username and password are required"}), 400
 
     if find_user_by_email_or_username(username=username):
         return jsonify({"success": False, "error": "Username already taken"}), 409
@@ -29,12 +29,11 @@ def register():
 def login():
     data = request.get_json()
 
-    email = data.get("email")
     username  = (data.get('username') or "").strip()
     password = data.get("password") or ""
 
-    if not username and not password:
-        return jsonify({"success": False, "error": "email or username and password are required"}), 400
+    if not username or not password:
+        return jsonify({"success": False, "error": "username and password are required"}), 400
 
     user = find_user_by_email_or_username(username=username)
     if not user:
