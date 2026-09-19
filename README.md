@@ -1,118 +1,94 @@
-# Grepship 🚀
+# Grepship
 
-An open-source, real-time messaging platform for students and small businesses — no ads, no restrictions, works in your browser.
+A simple messaging app for friends and small teams. It works in your browser, no ads, no signup fees.
 
-**Official Repository:** [github.com/gitbhusalhubpramish/Grepship](https://github.com/gitbhusalhubpramish/Grepship)
+Repo: https://github.com/gitbhusalhubpramish/Grepship
 
----
+## What it does
 
-## Features
+- Sign up with username + password (email is optional)
+- Log in, log out
+- Session stays until you close the tab
+- (coming soon) Send messages, view inbox, chat with people
 
-- **Completely open source** — MIT licensed, no restrictions
-- **Cross-device** — works in any modern browser
-- **Fast and reliable** — real-time messaging
-- **Free for everyone** — no ads, no age limit, no paywall
-- **Built for:** business owners, developers, engineers, students
+We built this for Hack Club's ThirdSpace program.
 
-## Tech Stack
+## Stack
 
-**Backend**
-
-- Python 3.12+
-- Flask (app factory pattern)
+Backend:
+- Python + Flask
 - MongoDB Atlas (PyMongo)
-- Flask sessions (cookie-based auth)
-- `werkzeug.security` (scrypt password hashing)
+- Flask sessions for login
+- werkzeug for password hashing
 
-**Frontend**
-
-- Next.js 16 (App Router)
-- React
+Frontend:
+- Next.js 16
 - Tailwind CSS
-- Custom earth-tone theme
 
-## Project Structure
+## Layout
 
-```text
 Grepship/
-├── grepship/
-│   ├── app/              # Next.js pages
-│   ├── components/       # React components
-│   ├── public/           # static assets
-│   └── backend/          # Flask API
-│       ├── app.py        # Flask app factory
-│       ├── extensions.py # PyMongo instance
-│       ├── models/       # MongoDB helpers
-│       ├── routes/       # API blueprints
-│       ├── utils/        # helpers (password hashing)
-│       └── requirements.txt
-└── README.md
-```
+└── grepship/
+├── app/ Next.js pages
+├── components/ React components
+├── public/ images, static files
+└── backend/ Flask API
+├── app.py
+├── models/
+├── routes/
+└── utils/
 
-## Running Locally
+## How to run it
 
-### Prerequisites
+You need Python 3.10+ and Node.js 20+.
 
-- **git** — version control
-- **Python 3.10+** — for the backend
-- **Node.js 20+** and **npm** — for the frontend
+**Backend (Flask):**
 
-### 1. Clone the repository
-
-```bash
-git clone https://github.com/gitbhusalhubpramish/Grepship.git
-cd Grepship
-```
-
-### 2. Backend setup (Flask)
-
-```bash
 cd grepship/backend
-
 python3 -m venv venv
-source venv/bin/activate              # Windows: venv\Scripts\activate
-
+source venv/bin/activate
 pip install -r requirements.txt
-
-# Create a .env file with:
-# PORT=5000
-# SECRET_KEY=<generate a random 64-char hex>
-# MONGO_URI=<your MongoDB Atlas connection string>
-
 python app.py
-```
 
-Backend runs at **http://localhost:5000**
+Make a `.env` file in `grepship/backend/` with:
 
-### 3. Frontend setup (Next.js)
+PORT=5000
+SECRET_KEY=some random string
+MONGO_URI=your MongoDB Atlas connection string
 
-```bash
+Flask runs on http://localhost:5000.
+
+**Frontend (Next.js):**
+
 cd grepship
 npm install
 npm run dev
-```
 
-Frontend runs at **http://localhost:3000**
 
-## API Endpoints
+Next.js runs on http://localhost:3000.
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/auth/register` | Create a new account |
-| POST | `/api/auth/login` | Login (returns session cookie) |
-| POST | `/api/auth/logout` | Clear session |
-| GET | `/api/auth/me` | Get current user |
+The Next.js config has a rewrite that sends `/api/*` calls to Flask, so you can call `/api/auth/login` from the browser without worrying about CORS.
 
-See [`backend/API.md`](grepship/backend/API.md) for full details.
+## API
+
+Auth endpoints (all under `/api/auth/`):
+
+- `POST /signup` — create account. Body: `{username, password, email?}`
+- `POST /login` — login. Body: `{username, password}`
+- `POST /logout` — clears session
+- `GET /me` — returns current user or `{user: null}`
+
+More endpoints coming for messages and inbox.
 
 ## Contributing
 
-Grepship is a two-person project built at [Hack Club](https://hackclub.com):
+Two of us are building this:
 
-- **[Pramish Bhusal](https://github.com/gitbhusalhubpramish)** — Frontend (Next.js, React, Tailwind)
-- **[Hemanta Kandel](https://github.com/hemanta-kandel)** — Backend (Flask, MongoDB, auth)
+- Pramish — frontend
+- Hemanta — backend
 
-Pull requests welcome. For major changes, open an issue first.
+PRs welcome.
 
 ## License
-Completely free to use.
+
+MIT.
