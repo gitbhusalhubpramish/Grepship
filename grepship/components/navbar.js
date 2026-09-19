@@ -3,13 +3,18 @@ import Link from "next/link"
 import {useState, useEffect} from "react"
 export default function Navbar(){
 
-	const [profilepic, setprofilepic] = useState(null)
+	const [profilepic, setprofilepic] = useState("/default_profile.png")
+	const [login, setlogin] = useState(true)
 	useEffect(()=>{
 		async function loadSession(){
 			try {
 				const res = await fetch("/api/auth/me")
 				const data = await res.json()
-				
+
+				if (!data.user)	{
+					return
+				}
+				setlogin(true)
 				setprofilepic(data.user.profilepic)
 			} catch (err){
 				console.log(err)
@@ -42,14 +47,14 @@ export default function Navbar(){
 					/>
 				</svg>
 			</div>
-			{profilepic ? (
-				<div>
-				<div>
-					<button>inbox</button>
-				</div>
-				<div>
-					<div><img src={profilepic} /></div>
-				</div>
+			{login ? (
+				<div className="w-1/5 h-full flex justify-between items-cneter p-10 h-full">
+					<Link href="/">
+						<button className="bg-[#e6a82e] text-[#26351f] hover:bg-[#f0b83d] px-4 p-2 rounded-xl cursor-pointer">Inbox</button>
+					</Link>
+					<div className="w-15 h-full rounded-lg flex items-center bg-[#022520]">
+						<div className="rounded-full"><img className="rounded-full w-9 ml-1" src={profilepic} /></div>
+					</div>
 				</div>
 			) : (
 				<div className="w-1/5 flex justify-between items-center p-10">
