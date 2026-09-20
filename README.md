@@ -1,17 +1,18 @@
 # Grepship
 
-A simple messaging app for friends and small teams. It works in your browser, no ads, no signup fees.
+A simple messaging app for friends and small teams. It works in your browser, no ads, no signup fees. It was made using next.js, python flask, tailwind by team peanguin - [Pramish Bhusal](https://github.com/gitbhusalhubpramish) and [Hemanta Kendel](https://github.com/hemanta-kandel)
 
-Repo: https://github.com/gitbhusalhubpramish/Grepship
+Repo: [Grepship](https://github.com/gitbhusalhubpramish/Grepship)
 
-## What it does
+## Feature and page navigation
 
-- Sign up with username + password (email is optional)
-- Log in, log out
-- Session stays until you close the tab
-- (coming soon) Send messages, view inbox, chat with people
+- **User auth:** User auth data is handel by mongodb database and backend is writtern by flask - we check user session, and signup/login in this auth session.
 
-We built this for Hack Club's ThirdSpace program.
+- **Interactive UI:** We made a user friendly UI using nextjs, react, and tailwind/postcss. The color combo is managed so that it matches thirdspace week 1 theme - **Harvest**
+
+- **Messaging and Inbox:** While writing this docs it's not done yet but will be done by next week, further week or we may have done some this week too...
+
+---
 
 ## Stack
 
@@ -22,7 +23,7 @@ Backend:
 - werkzeug for password hashing
 
 Frontend:
-- Next.js 16
+- Next.js 16 with react compiler
 - Tailwind CSS
 
 ## Layout
