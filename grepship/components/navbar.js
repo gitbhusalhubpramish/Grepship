@@ -16,7 +16,7 @@ export default function Navbar(){
 					return
 				}
 				setlogin(true)
-				setprofilepic(data.user.profilepic or "/default_profile.png")
+				setprofilepic(data.user.profilepic || "default_profile.png")
 			} catch (err){
 				console.log(err)
 			}
