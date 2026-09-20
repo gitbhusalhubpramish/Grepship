@@ -4,7 +4,7 @@ import {useState, useEffect} from "react"
 export default function Navbar(){
 
 	const [profilepic, setprofilepic] = useState("/default_profile.png")
-	const [login, setlogin] = useState(true)
+	const [login, setlogin] = useState(false)
 	useEffect(()=>{
 		async function loadSession(){
 			try {
