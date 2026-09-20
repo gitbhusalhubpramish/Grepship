@@ -61,6 +61,14 @@ Grepship/
 		... other stuff...
 ```
 
+**Here:**
+
+- It's almost all in next.js file structre - it was made with it ofc...
+- Backend is handel by flask which is in `grepship/backend/` folder where `app.py` is the main file and other app were created to make it easy to optmize
+- some most(everywere) used components like navbar was shifted in components folder and included in index.js to keep it pernamently rateer than making some chaos.
+- public folder stores public images like default vercel logos and default profile pic for users.
+- some config files are there which wasn't used by us much but some amount were used.
+
 ## How to run it
 
 You need Python 3.10+ and Node.js 20+.
@@ -69,8 +77,8 @@ You need Python 3.10+ and Node.js 20+.
 
 ```base
 cd grepship/backend
-python3 -m venv venv
-source venv/bin/activate
+python3 -m venv venv		#for linux
+source venv/bin/activate	#for linux
 pip install -r requirements.txt
 python app.py
 ```
