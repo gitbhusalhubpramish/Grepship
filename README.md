@@ -68,12 +68,15 @@ Grepship/
 - some most(everywere) used components like navbar was shifted in components folder and included in index.js to keep it pernamently rateer than making some chaos.
 - public folder stores public images like default vercel logos and default profile pic for users.
 - some config files are there which wasn't used by us much but some amount were used.
+- Most of the security are handel in backend - we can't trust the clent site.
 
 ## How to run it
 
 You need Python 3.10+ and Node.js 20+.
 
 **Backend (Flask):**
+
+Open terminal and run this command:
 
 ```base
 cd grepship/backend
@@ -109,7 +112,7 @@ The Next.js config has a rewrite that sends `/api/*` calls to Flask, so you can 
 
 Auth endpoints (all under `/api/auth/`):
 
-- `POST /signup` — create account. Body: `{username, password, email?}`
+- `POST /signup` — create account. Body: `{username, password, email?, conformpass}`
 - `POST /login` — login. Body: `{username, password}`
 - `POST /logout` — clears session
 - `GET /me` — returns current user or `{user: null}`
@@ -120,10 +123,25 @@ More endpoints coming for messages and inbox.
 
 Two of us are building this:
 
-- Pramish — frontend
-- Hemanta — backend
+- Pramish — Frontend(Nextjs)
+- Hemanta — Backend(Flask)
 
-PRs welcome.
+PRs and issues are welcome.
+
+---
+
+## What we learnt form this
+
+- Nextjs
+- Flask
+- Designing(ui/ux and logo)
+- Database
+- web security
+- Most importently **Team work**
+
+	This project isn't just for a hackclub ysws but for our future teamwork quality and leadership
+							-Pramish Bhusal
+
 
 ## License
 
