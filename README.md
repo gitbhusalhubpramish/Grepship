@@ -70,6 +70,8 @@ Grepship/
 - some config files are there which wasn't used by us much but some amount were used.
 - Most of the security are handel in backend - we can't trust the clent site.
 
+---
+
 ## How to run it
 
 You need Python 3.10+ and Node.js 20+.
@@ -108,16 +110,20 @@ Next.js runs on `http://localhost:3000`.
 
 The Next.js config has a rewrite that sends `/api/*` calls to Flask, so you can call `/api/auth/login` from the browser without worrying about CORS.
 
+---
+
 ## API
 
 Auth endpoints (all under `/api/auth/`):
 
-- `POST /signup` — create account. Body: `{username, password, email?, conformpass}`
-- `POST /login` — login. Body: `{username, password}`
-- `POST /logout` — clears session
-- `GET /me` — returns current user or `{user: null}`
+- `POST /signup` - create account. Body: `{username, password, email?, conformpass}`
+- `POST /login` - login. Body: `{username, password}`
+- `POST /logout` - clears session
+- `GET /me` - returns current user or `{user: null}` - whether user is logged in or not
 
 More endpoints coming for messages and inbox.
+
+---
 
 ## Contributing
 
@@ -139,9 +145,12 @@ PRs and issues are welcome.
 - web security
 - Most importently **Team work**
 
+```
 	This project isn't just for a hackclub ysws but for our future teamwork quality and leadership
 							-Pramish Bhusal
+```
 
+---
 
 ## License
 
