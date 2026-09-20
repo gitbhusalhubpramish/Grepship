@@ -12,10 +12,11 @@ export default function Navbar(){
 				const data = await res.json()
 
 				if (!data.user)	{
+					setlogin(false)
 					return
 				}
 				setlogin(true)
-				setprofilepic(data.user.profilepic)
+				setprofilepic(data.user.profilepic or "/default_profile.png")
 			} catch (err){
 				console.log(err)
 			}
