@@ -146,3 +146,13 @@ PRs and issues are welcome.
 ## License
 
 MIT all right reserved.
+
+## Use of AI
+
+So, we are currently learning all things we got that we can't use AI above 30% but we tried to use below 5% or less(and it is). Both of us tried to use AI very less but some bugs(very few) we got were so hard(silly) that we had to use AI but as a research tool - logic was pure non AI. 
+
+In summary, we used AI as a research tool only not as a working patner/assistance.
+
+---
+
+Markdown writtern by [Pramish Bhusal](https://github.com/gitbhusalhubpramish) and [Hemanta Kendel](https://github.com/hemanta-kandel)
