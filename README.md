@@ -26,18 +26,40 @@ Frontend:
 - Next.js 16 with react compiler
 - Tailwind CSS
 
+---
+
 ## Layout
 
+```
 Grepship/
-└── grepship/
-├── app/ Next.js pages
-├── components/ React components
-├── public/ images, static files
-└── backend/ Flask API
-├── app.py
-├── models/
-├── routes/
-└── utils/
+	grepship/
+		app/
+			index.js		#root index file
+			page.js			#home page file
+			signup/			#signup page folder
+				page.js			#main file wraping the page
+				signup.js		#main ui file it is seprate cuz node doesnt allow react hooks in server component
+			login/
+				page.js			#main file wraping the page
+				signup.js		#main ui file
+			global.css			#css file - just `@import "tailwind"` :P
+			favicon.ico			#app icon
+		backend/
+			app.py			#backend server main file
+			extensions.py			
+			requirements.txt	#requirements file - what are required to run the app
+			models/
+				user.py			#some function related to user auth
+			routes/
+				auth.py			# for `/auth` endpoint
+			utils/
+				security.py		# some securit file ig
+		components/
+			navbar.js		#navbar component file
+		public/
+			default_profile.png	# default profile pic of user when logged in
+		... other stuff...
+```
 
 ## How to run it
 
@@ -45,28 +67,33 @@ You need Python 3.10+ and Node.js 20+.
 
 **Backend (Flask):**
 
+```base
 cd grepship/backend
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 python app.py
+```
 
 Make a `.env` file in `grepship/backend/` with:
 
+```env
 PORT=5000
 SECRET_KEY=some random string
 MONGO_URI=your MongoDB Atlas connection string
+```
 
 Flask runs on http://localhost:5000.
 
 **Frontend (Next.js):**
 
+```base
 cd grepship
 npm install
 npm run dev
+```
 
-
-Next.js runs on http://localhost:3000.
+Next.js runs on `http://localhost:3000`.
 
 The Next.js config has a rewrite that sends `/api/*` calls to Flask, so you can call `/api/auth/login` from the browser without worrying about CORS.
 
@@ -92,4 +119,4 @@ PRs welcome.
 
 ## License
 
-MIT.
+MIT all right reserved.
