@@ -16,8 +16,9 @@ export default function Signup(){
 			alert("password didn't matched")
 			return
 		}
-		const res = await fetch("api/auth/register", {method: "POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({form})})
-		
+		const res = await fetch("api/auth/signup", {method: "POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({username: form.username, password:form.password, conformpass:form.conformpass, email:form.email})})
+		const data = await res.json()
+		console.log(data)
 		if (res.status===201){
 			alert("signup successful")
 		}
@@ -26,8 +27,9 @@ export default function Signup(){
 			
 		}
 		else if (res.status===400){
-			alert(res.message)
+			alert(data.error)
 		}
+		console.log(res)
 		
 		
 	}

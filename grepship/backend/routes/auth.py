@@ -39,10 +39,10 @@ def register():
 
     if find_user_by_email_or_username(username=username):
         return jsonify({"success": False, "error": "Username already taken"}), 409
-    
+    print("pass 409-1")
     if email and find_user_by_email_or_username(email=email):
         return jsonify({"success": False, "error": "Email already in use"}), 409
-
+    print("pass 409-2")
     password_hash = hash_password(password)
 
     user_id = create_user(username, email or None, password_hash)
