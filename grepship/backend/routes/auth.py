@@ -1,25 +1,42 @@
 from flask import Blueprint, jsonify, request, session
 from models.user import create_user, find_user_by_email_or_username, find_user_by_id
 from utils.security import hash_password, verify_password
+from utils.validation import get_str, valid_username, valid_email
+from utils.password import check_password_strength
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/api/auth")
 
-
 @auth_bp.route("/signup", methods=["POST"])
-def register():
-    data = request.get_json()
-    print(data)
-    username = (data.get("username") or "").strip()
-    email = (data.get("email") or "").strip().lower()
-    password = data.get('password') or ""
-    print(type(data))
-    print(username)
-    print(username, email,password)
 
-    if not username or not email or not password:
-        return jsonify({"success": False, "error": "username, email, and password are required"}), 400
-    
-    print("pass 400")
+def register():
+    data = request.get_json(silent=True) or {}
+
+    if not data: 
+        return jsonify({"success": False, "error": "Invalid JSON body"}), 400
+
+    username = get_str(data, "username")
+
+    email = get_str(data, "email").lower()
+
+    password = get_str(data, "password", strip=False)
+
+    if not username or not password:
+        return jsonify({"success": False, "error": "username and password are required"}), 400
+
+    if not valid_username(username):
+        return jsonify({"success": False, "error": "username must be 3-20 chars: a-z, 0-9, _"}), 400
+
+    ok, err = check_password_strength(password)
+
+    if not ok:
+        return jsonify({"success": False, "error": err}), 400
+
+    if email and not valid_email(email):
+        return jsonify({"success": False, "error": "Invalid email format"}), 400
+
+    if len(email) > 254:
+        return jsonify({"success": False, "error": "email too long"}), 400
+
     if find_user_by_email_or_username(username=username):
         return jsonify({"success": False, "error": "Username already taken"}), 409
     print("pass 409-1")
@@ -27,22 +44,32 @@ def register():
         return jsonify({"success": False, "error": "Email already in use"}), 409
     print("pass 409-2")
     password_hash = hash_password(password)
-    user_id = create_user(username, email, password_hash)
+
+    user_id = create_user(username, email or None, password_hash)
+
     return jsonify({"success": True, "userId": user_id}), 201
 
 @auth_bp.route("/login", methods=["POST"])
+
 def login():
-    data = request.get_json()
-    print(data)
 
-    email = data.get("email")
-    username  = (data.get('username') or "").strip()
-    password = data.get("password") or ""
+    data = request.get_json(silent=True)
 
-    if not username and not password:
-        return jsonify({"success": False, "error": "email or username and password are required"}), 400
+    if not data:
+        return jsonify({"success": False, "error": "Invalid JSON body"}), 400
+
+    username = get_str(data, "username")
+
+    password = get_str(data, "password", strip=False)
+
+    if not username or not password:
+        return jsonify({"success": False, "error": "username and password are required"}), 400
+
+    if len(username) > 20 or len(password) > 100:
+        return jsonify({"success": False, "error": "Invalid credentials"}), 401
 
     user = find_user_by_email_or_username(username=username)
+
     if not user:
         return jsonify({"success": False, "error": "Invalid credentials"}), 401
 
@@ -63,17 +90,24 @@ def login():
 
 
 @auth_bp.route("/logout", methods=["POST"])
+
 def logout():
+
     session.clear()
+
     return jsonify({"success": True}), 200
 
 @auth_bp.route("/me", methods=["GET"])
+
 def me():
+
     user_id = session.get("user_id")
+
     if not user_id:
         return jsonify({"user": None}), 200
 
     user = find_user_by_id(user_id)
+
     if not user:
         session.clear()
         return jsonify({"user": None}), 200
@@ -83,6 +117,13 @@ def me():
             "id": str(user["_id"]),
             "username": user["username"],
             "email": user.get('email') or None,
-            "profile_pic": user["profile_pic"],
+            "profile_pic": user["profile_pic"],            
         }
     }), 200
+
+# To work with user authentication eg login and signup page on frontend this file is create. 
+
+# simple code overview
+#  -> Register for registering the user mainly after filling signup page
+# -> Login for checking a user is exist with username and password or email optional. 
+# -> Store in hash password, can failed sql injection, xss and other common attacks.
