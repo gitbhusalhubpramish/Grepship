@@ -54,8 +54,23 @@ export default function Inbox(){
 	}, [])
 
 	return (<div className="pt-50 p-20 flex gap-4 bg-[#FFF8E7] h-screen">
-		<div className="w-1/3 bg-[#FFFFFF] h-full border-1 border-[#e4dfc9] rounded-3xl p-5">meanu</div>
-		<div className="flex-1 bg-[#FFFFFF] h-full border-1 border-[#e4dfc9] rounded-3xl p-5">inbox</div>
-		<div className={`w-1/3 bg-[#FFFFFF] h-full border-1 border-[#e4dfc9] rounded-3xl p-5 ${showoption ? "hidden" : ""}`}>more</div>
+		<div className="w-1/3 bg-[#FFFFFF] h-full border-1 border-[#e4dfc9] rounded-3xl p-5">
+			{!menu ? menu.map(item =>(
+				<div className="rounded-3xl">
+					<img src={item.profilepic}/>
+					<p>{item.username}</p>
+					{item.isunread ? <div className="bg-red-700 rounded-full w-5 h-5"/> : <></>}
+				</div>
+			)) : <p className="h-full w-full items-center flex justify-center">No messages sent or recived</p>}
+		</div>
+		<div className="flex-1 bg-[#FFFFFF] h-full border-1 border-[#e4dfc9] rounded-3xl p-5">
+			{chat!==null ? inbox.map(item =>(
+				<div className={`flex ${item.sender==chat} ? "" : "flex-row-reverse"`}>
+					<img src={inbox.profilepic} alt="user"/>
+					<p className="rounded-xl">{item.message}</p>
+				</div>
+			)) : <p className="flex h-full justify-center items-center">No chat selected</p>}
+		</div>
+		<div className={`w-1/3 bg-[#FFFFFF] h-full border-1 border-[#e4dfc9] rounded-3xl p-5 ${showoption ? "" : "hidden"}`}>more</div>
 	</div>)
 }
