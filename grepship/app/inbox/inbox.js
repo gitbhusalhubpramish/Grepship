@@ -6,13 +6,34 @@ export default function Inbox(){
 	const [menu, setmenu] = useState([])
 	const [inbox, setinbox] = useState([])
 	const [option, setoption] = useState([])
+	const [chat, setchat] = useState(null)
+	const [showoption, setshowoption] = useState(false)
 
 	useEffect(()=>{
 		const fetchdata = async ()=>{
 			try {
-				socket.connect()
-				socket.on("menu", (data)=>{setMenu(data)})
-				
+				const res = await fetch("/api/inbox/menu")
+				if (!res.ok){
+					console.log(res)
+					return 
+				}
+				const data = await res.json()
+				setmenu(data)
+			} catch(error){
+				console.log(error)
+			}
+		}
+		fetchdata()
+	})
+	useEffect(()=>{
+		const fetchdata = async ()=>{
+			try{
+				if (!chat){
+					return
+				}
+				const res = await fetch(`/api/inbox/${chat}`)
+				const data = await res.json()
+				setinbox(data)
 			} catch(error){
 				console.log(error)
 			}
@@ -22,6 +43,6 @@ export default function Inbox(){
 	return (<div className="pt-50 p-20 flex gap-4 bg-[#FFF8E7] h-screen">
 		<div className="w-1/3 bg-[#FFFFFF] h-full border-1 border-[#e4dfc9] rounded-3xl p-5">meanu</div>
 		<div className="flex-1 bg-[#FFFFFF] h-full border-1 border-[#e4dfc9] rounded-3xl p-5">inbox</div>
-		<div className="w-1/3 bg-[#FFFFFF] h-full border-1 border-[#e4dfc9] rounded-3xl p-5">more</div>
+		<div className={`w-1/3 bg-[#FFFFFF] h-full border-1 border-[#e4dfc9] rounded-3xl p-5 ${showoption ? "hidden" : ""}`}>more</div>
 	</div>)
 }
