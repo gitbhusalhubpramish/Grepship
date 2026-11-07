@@ -40,8 +40,60 @@ inbox = {
 }
 ```
 
-- **Messages notification:** Here the app uses websoket api where server can send notification on client site. So, Here messages are rendered without refreshing the app. It fetch data from backend then render `message_body` parts to chat history and keep the chat in first.
+- **Messages notification:** Here the app uses websoket api where server can send notification on client site. So, Here messages are rendered without refreshing the app. It fetch data from backend then render `message` to chat history and keep the chat in first.
 
 - **Send messages:** Here Messages are sent by the user to chat. It includes `reciver`, `message` and `time`.
 
+## Backend
 
+This backend is writtern by Flask and websoket. Since most of the part is boken so i have to fix it well. Any way the backend for messaging looks like this:
+
+- **Get fetch to `/api/inbox/menu`:** Here clent site sends get request to `/api/inbox/menu` to access charts menu with profile pic, username and whether he/she sand new message. teh respond for this endpoint look like this:
+
+```json
+{
+	[
+		"username":str,
+		"profilepic": str,
+	]	"isread": bool,
+}
+```
+
+- **Get fetch to `/api/inbox/${chat}`:** HEre client site sends get request to `/api/inbox/${chat}` to access chat history with message and isread. The resppond looks like this:
+
+```json
+{
+	[
+		"sent":bool,
+		"time": time,
+		"Isread": bool,
+		"message": str,
+	]
+}
+```
+
+- **socket on "new_message":** Here socket is used to notify client. But it also do some stuff like sorting the menu or adding the user to chat menu. It sends request like:
+
+```json
+{
+	[
+		"time":time,
+		"message":str,
+		"sender": str,
+	]
+}
+```
+
+*since message is new so it is unread by default and was sent by the chat*
+
+- **socket emit "send message"** Here client sends req to socket after message is sent by the user. The struct looks like:
+
+```json
+{
+	[
+		"time": time,
+		"message":str,
+		"reciver": str,
+	]
+}
+```
