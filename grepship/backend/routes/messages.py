@@ -15,3 +15,7 @@ def new_msg(data):
 
 	mongo.db.usrdata.update_one({"username": data.reciver}, {"$push": {"chats": {"$each":[{"username": response.username, "Isread":False}], "$position":0}}})
 	mongo.db.usrdata.update_one({"username": response.username}, {"$push": {"chats": {"$each": [{"username": data.reciver, "Isread": True}], "$position":0}}})
+	emit("new_message", {"username": response.username, "message": data.message, "time": data.time})
+
+	print("Success")
+	

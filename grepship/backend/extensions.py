@@ -3,4 +3,4 @@ from flask_socketio import SocketIO
 
 mongo = PyMongo()
 
-socketio = SocketIO(cros_allowed_origins="*", async_mode="threading")
+socketio = SocketIO(cors_allowed_origins=["http://localhost:3000"], async_mode="threading")

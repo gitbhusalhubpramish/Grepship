@@ -1,17 +1,18 @@
 from flask_cors import CORS # Essential for communication
-from extensions import mongo  # Mongo Database
+from extensions import mongo, socketio  # Mongo Database
 from dotenv import load_dotenv  
 from pathlib import Path 
 import os 
 from flask import Flask, jsonify 
 from routes.auth import auth_bp
+from flask_socketio import SocketIO
 
 load_dotenv(Path(__file__).parent / ".env")
 
 
 def create_app(): # Main function for all work 
     app = Flask(__name__)
-
+    socketio.init_app(app)
     app.config[ "SECRET_KEY"] = os.getenv("SECRET_KEY")
     app.config["MONGO_URI"] = os.getenv(
         "MONGO_URI", "mongodb://localhost:27017/grepship"
