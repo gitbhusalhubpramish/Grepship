@@ -7,17 +7,14 @@ from flask import Flask, jsonify
 from routes.auth import auth_bp
 from flask_socketio import SocketIO
 
-load_dotenv(Path(__file__).parent / ".env")
+load_dotenv(Path(__file__).resolve().parent.parent/".env")
 
 
 def create_app(): # Main function for all work 
     app = Flask(__name__)
     socketio.init_app(app)
-    app.config[ "SECRET_KEY"] = os.getenv("SECRET_KEY")
-    app.config["MONGO_URI"] = os.getenv(
-        "MONGO_URI", "mongodb://localhost:27017/grepship"
-    )
-
+    #app.config[ "SECRET_KEY"] = os.getenv("SECRET_KEY")
+    app.config["MONGO_URI"] = os.getenv("MONGODB_URI")
     mongo.init_app(app)
 
     CORS(app, origins=['http://localhost:3000'], supports_credentials=True)
