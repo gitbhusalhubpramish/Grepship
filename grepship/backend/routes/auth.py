@@ -116,26 +116,35 @@ def logout():
 @auth_bp.route("/me", methods=["GET"])
 
 def me():
+    try:
+        user_id = request.cookies.get("session_id")
 
-    user_id = session.get("user_id")
+        if not user_id:
+            return jsonify({"user": None}), 401
 
-    if not user_id:
-        return jsonify({"user": None}), 200
+        user = redis_client.get(f"session{user_id}")
+        print(user)
+        user = find_user_by_email_or_username(username=user)
+        print(user_id, user)
 
-    user = find_user_by_id(user_id)
+        if not user:
+            response = make_response(jsonify({"user":None}))
+            response.delete_cookie("session_id")
+            redis_client.delete(f"session{user_id}")
+            return response, 401
 
-    if not user:
-        session.clear()
-        return jsonify({"user": None}), 200
-
-    return jsonify({
-        "user": {
-            "id": str(user["_id"]),
-            "username": user["username"],
-            "email": user.get('email') or None,
-            "profile_pic": user["profile_pic"],            
-        }
-    }), 200
+        return jsonify({
+            "user": {
+                "id": str(user["_id"]),
+                "username": user["username"],
+                "email": user.get('email') or None,
+                "profile_pic": user["profile_pic"],            
+            }
+        }), 200
+    except Exception as e:
+        traceback.print_exc()
+        print(e)
+        return {"error": str(e)}
 
 # To work with user authentication eg login and signup page on frontend this file is create. 
 
