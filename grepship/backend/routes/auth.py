@@ -1,9 +1,11 @@
-from flask import Blueprint, jsonify, request, session
+from flask import Blueprint, jsonify, request, session, make_response
 from models.user import create_user, find_user_by_email_or_username, find_user_by_id
 from utils.security import hash_password, verify_password
 from utils.validation import get_str, valid_username, valid_email
 from utils.password import check_password_strength
 import traceback
+import secrets
+from utils.redis import redis_client
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/api/auth")
 
@@ -49,7 +51,15 @@ def register():
 
         user_id = create_user(username, email or None, password_hash)
 
-        return jsonify({"success": True, "userId": user_id}), 201
+        session_id = secrets.token_urlsafe(32)
+
+        response= make_response(jsonify({"message": "Login successful"}))
+
+        response.set_cookie("session_id", session_id, httponly=True, secure=True, samesite="Lax", max_age=7*24*60*60)
+
+        redis_client.setex(f"session{session_id}", 7*24*60*60, username)
+
+        return response, 201
     except Exception as e:
         traceback.print_exc()
         print(e)
