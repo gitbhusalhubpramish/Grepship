@@ -69,40 +69,38 @@ def register():
 
 def login():
 
-    data = request.get_json(silent=True)
+        data = request.get_json(silent=True)
 
-    if not data:
-        return jsonify({"success": False, "error": "Invalid JSON body"}), 400
+        if not data:
+            return jsonify({"success": False, "error": "Invalid JSON body"}), 400
 
-    username = get_str(data, "username")
+        username = get_str(data["username"])
 
-    password = get_str(data, "password", strip=False)
+        password = get_str(data["password"])
 
-    if not username or not password:
-        return jsonify({"success": False, "error": "username and password are required"}), 400
+        if not username or not password:
+            return jsonify({"success": False, "error": "username and password are required"}), 400
 
-    if len(username) > 20 or len(password) > 100:
-        return jsonify({"success": False, "error": "Invalid credentials"}), 401
+    #if len(username) > 20 or len(password) > 100:
+     #   return jsonify({"success": False, "error": "Invalid credentials"}), 401
 
-    user = find_user_by_email_or_username(username=username)
+        user = find_user_by_email_or_username(username=username)
 
-    if not user:
-        return jsonify({"success": False, "error": "Invalid credentials"}), 401
+        if not user:
+            return jsonify({"success": False, "error": "Invalid credentials"}), 401
 
-    if not verify_password(password, user["password_hash"]):
-        return jsonify({"success": False, "error": "Invalid credentials"}), 401
+        if not verify_password(password, user["password_hash"]):
+            return jsonify({"success": False, "error": "Invalid credentials"}), 401
 
-    session["user_id"] = str(user["_id"])
+        session_id = secrets.token_urlsafe(32)
 
-    return jsonify({
-        "success": True,
-        "user": {
-            "id": str(user["_id"]),
-            "username": user["username"],
-            "email": user.get('email'),
-            "profile_pic": user["profile_pic"],
-        }
-    }), 200
+        response= make_response(jsonify({"message": "Login successful"}))
+
+        response.set_cookie("session_id", session_id, httponly=True, secure=True, samesite="Lax", max_age=7*24*60*60)
+
+        redis_client.setex(f"session{session_id}", 7*24*60*60, username)
+
+        return response, 200
 
 
 @auth_bp.route("/logout", methods=["POST"])
