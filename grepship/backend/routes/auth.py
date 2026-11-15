@@ -68,7 +68,7 @@ def register():
 @auth_bp.route("/login", methods=["POST"])
 
 def login():
-
+    try:
         data = request.get_json(silent=True)
 
         if not data:
@@ -81,8 +81,8 @@ def login():
         if not username or not password:
             return jsonify({"success": False, "error": "username and password are required"}), 400
 
-    #if len(username) > 20 or len(password) > 100:
-     #   return jsonify({"success": False, "error": "Invalid credentials"}), 401
+        if len(username) > 100 or len(password) > 100 or not valid_username(username) or not valid_password(password):
+            return jsonify({"success": False, "error": "Invalid credentials"}), 401
 
         user = find_user_by_email_or_username(username=username)
 
@@ -101,6 +101,11 @@ def login():
         redis_client.setex(f"session{session_id}", 7*24*60*60, username)
 
         return response, 200
+    except Exception as e:
+        traceback.print_exc()
+        print(e)
+        return {"error": str(e)}
+
 
 
 @auth_bp.route("/logout", methods=["POST"])
