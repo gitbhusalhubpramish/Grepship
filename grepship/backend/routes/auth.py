@@ -74,21 +74,23 @@ def login():
         if not data:
             return jsonify({"success": False, "error": "Invalid JSON body"}), 400
 
-        username = get_str(data["username"])
+        username = get_str(data,"username")
 
-        password = get_str(data["password"])
+        password = get_str(data,"password")
 
         if not username or not password:
             return jsonify({"success": False, "error": "username and password are required"}), 400
 
-        if len(username) > 100 or len(password) > 100 or not valid_username(username) or not valid_password(password):
+        if len(username) > 100 or len(password) > 100 or not valid_username(username):
             return jsonify({"success": False, "error": "Invalid credentials"}), 401
 
         user = find_user_by_email_or_username(username=username)
+        print(user)
 
         if not user:
             return jsonify({"success": False, "error": "Invalid credentials"}), 401
 
+        print(password)
         if not verify_password(password, user["password_hash"]):
             return jsonify({"success": False, "error": "Invalid credentials"}), 401
 
@@ -111,10 +113,19 @@ def login():
 @auth_bp.route("/logout", methods=["POST"])
 
 def logout():
+    try:
+        session = request.cookies.get("session_id")
+        if not session:
+            return jsonify({"error": "user isn't loggedin"}), 401
+        redis_client.delete(f"session{session}")
+        response = make_response(jsonify({"success":True}))
+        response.delete_cookie("session_id")
+        return response, 200
+    except Exception as e:
+        traceback.print_exc()
+        print(e)
+        return {"error": str(e)}
 
-    session.clear()
-
-    return jsonify({"success": True}), 200
 
 @auth_bp.route("/me", methods=["GET"])
 

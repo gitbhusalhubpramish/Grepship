@@ -7,7 +7,8 @@ USERNAME_RE = re.compile(r"^[a-zA-Z0-9_]{3,20}$")
 EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 
 def get_str(data, key, strip=True):
-
+    if not isinstance(data, dict):
+        return ""
     value = data.get(key)
 
     if not isinstance(value, str):
