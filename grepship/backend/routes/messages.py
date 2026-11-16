@@ -41,4 +41,10 @@ def search():
 
 @inb_bp.route("/menu")
 def menu():
-	pass
+	session = request.cookies.get("session_id")
+	current_user = auth_user_by_session(session)
+	if current_user is None:
+		return {"error": "auth error"}, 401
+	friends = mongo.db.users.find_one({"username": current_user}, {"friends":1, "_id":0})
+	friends_data = mongo.db.users.find({"username":{"$in": list(friends or [])}}, {"_id":0, "username":1, "profile_pic":1})
+	return jsonify(friends_data), 200
