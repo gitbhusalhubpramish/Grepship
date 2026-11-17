@@ -14,11 +14,11 @@ def new_msg(data):
 		return jsonify({"error":"unathorized"}), 401
 	mongo.db.chats.update_one({"participants": {"$all": [response.username, data.reciver]}}, {"$push": {"messages": {"message":data.message, "time":data.time, "sender":response.username, "Isread": False}}}, upsert=True)
 
-	mongo.db.usrdata.update_one({"username": data.reciver}, {"$pull": {"chats": {"username": response.username}}})
-	mongo.db.usrdata.update_one({"username": response.username}, {"$pull": {"chats": {"username": data.reciver}}})
+	mongo.db.user.update_one({"username": data.reciver}, {"$pull": {"friends": {"username": response.username}}})
+	mongo.db.user.update_one({"username": response.username}, {"$pull": {"friends": {"username": data.reciver}}})
 
 	mongo.db.usrdata.update_one({"username": data.reciver}, {"$push": {"chats": {"$each":[{"username": response.username, "Isread":False}], "$position":0}}})
-	mongo.db.usrdata.update_one({"username": response.username}, {"$push": {"chats": {"$each": [{"username": data.reciver, "Isread": True}], "$position":0}}})
+	mongo.db.usrdata.update_one({"username": response.username}, {"$push": {"friends": {"$each": [{"username": data.reciver, "Isread": True}], "$position":0}}})
 	emit("new_message", {"username": response.username, "message": data.message, "time": data.time})
 
 	print("Success")
@@ -48,3 +48,12 @@ def menu():
 	friends = mongo.db.users.find_one({"username": current_user}, {"friends":1, "_id":0})
 	friends_data = mongo.db.users.find({"username":{"$in": list(friends or [])}}, {"_id":0, "username":1, "profile_pic":1})
 	return jsonify(friends_data), 200
+
+@inb_bp.route("/<username>")
+def chat(username):
+	session = request.cookies.get("session_id")
+	current_user = auth_user_by_session(session)
+	if current_user is None:
+		return {"error": "auth error"}, 401
+	cht = mongo.db.chat.find_one({"participants":{"$all": [current_user, username]}})
+	return cht, 200
