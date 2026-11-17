@@ -56,4 +56,5 @@ def chat(username):
 	if current_user is None:
 		return {"error": "auth error"}, 401
 	cht = mongo.db.chat.find_one({"participants":{"$all": [current_user, username]}})
-	return cht, 200
+	return jsonify(cht or []), 200
+
