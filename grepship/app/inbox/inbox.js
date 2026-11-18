@@ -24,7 +24,7 @@ export default function Inbox(){
 			}
 		}
 		fetchdata()
-	})
+	},[])
 	useEffect(()=>{
 		const fetchdata = async ()=>{
 			try{
@@ -51,7 +51,7 @@ export default function Inbox(){
 	useEffect(()=>{
 		socket.connect()
 		socket.on("new_message", (data)=>handelnewmsg(data))
-	}, [])
+	})
 
 	return (<div className="pt-50 p-20 flex gap-4 bg-[#FFF8E7] h-screen">
 		<div className="w-1/3 bg-[#FFFFFF] h-full border-1 border-[#e4dfc9] rounded-3xl p-5">
