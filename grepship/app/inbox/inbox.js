@@ -61,7 +61,7 @@ export default function Inbox(){
 			{menu ? menu.map(item =>(
 				<div className="rounded-3xl h-14 p-2 flex gap-3 items-center bg-[#FFF1CC] hover:bg-[#FFEBC0] border border-[#E4DFC9]" key={item.username}>
 					<img className="h-10 rounded-full aspect-square" alt="user" src={item.profile_pic}/>
-					<p className="overflow-hidden flex-1 font-semibold">{item.username}</p>
+					<p className="overflow-hidden flex-1 font-semibold hover:cursor-pointer">{item.username}</p>
 					{item.isunread ? <div className="bg-red-700 rounded-full w-5 h-5 shrink-0"/> : <></>}
 				</div>
 			)) : <p className="h-full w-full items-center flex justify-center">No messages sent or recived</p>}
