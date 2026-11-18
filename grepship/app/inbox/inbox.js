@@ -59,9 +59,9 @@ export default function Inbox(){
 	return (<div className="pt-50 p-20 flex gap-4 bg-[#FFF8E7] h-screen">
 		<div className="w-1/3 bg-[#FFFFFF] h-full border-1 border-[#e4dfc9] rounded-3xl p-5">
 			{menu ? menu.map(item =>(
-				<div className="rounded-3xl h-10 flex gap-3 items-center" key={item.username}>
+				<div className="rounded-3xl h-14 p-2 flex gap-3 items-center bg-[#FFF1CC] hover:bg-[#FFEBC0] border border-[#E4DFC9]" key={item.username}>
 					<img className="h-10 rounded-full aspect-square" alt="user" src={item.profile_pic}/>
-					<p className="overflow-hidden flex-1">{item.username}</p>
+					<p className="overflow-hidden flex-1 font-semibold">{item.username}</p>
 					{item.isunread ? <div className="bg-red-700 rounded-full w-5 h-5 shrink-0"/> : <></>}
 				</div>
 			)) : <p className="h-full w-full items-center flex justify-center">No messages sent or recived</p>}
