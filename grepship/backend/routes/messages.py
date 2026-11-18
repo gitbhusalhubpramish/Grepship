@@ -45,8 +45,11 @@ def menu():
 	current_user = auth_user_by_session(session)
 	if current_user is None:
 		return {"error": "auth error"}, 401
-	friends = mongo.db.users.find_one({"username": current_user}, {"friends":1, "_id":0})
-	friends_data = mongo.db.users.find({"username":{"$in": list(friends or [])}}, {"_id":0, "username":1, "profile_pic":1})
+	print(current_user)
+	friends = mongo.db.users.find_one({"username": current_user["username"]}, {"friends":1, "_id":0})
+	print(friends["friends"])
+	friends_data = mongo.db.users.find({"username":{"$in": list(friends["friends"] or [])}}, {"_id":0, "username":1, "profile_pic":1})
+	print(friends_data)
 	return jsonify(friends_data), 200
 
 @inb_bp.route("/<username>")
