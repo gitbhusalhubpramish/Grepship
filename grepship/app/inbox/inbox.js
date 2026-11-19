@@ -71,18 +71,18 @@ export default function Inbox(){
 		</div>
 		<div className="flex-1 bg-[#FFFFFF] h-full border-1 border-[#e4dfc9] rounded-3xl p-5">
 			{chat!==null ? (
-				<>{inbox.map(item =>(
+				<div className="flex h-full flex-col">{inbox.map(item =>(
 					<div className={`flex ${item.sender==chat} ? "" : "flex-row-reverse"`}>
 						<img src={inbox.profilepic} alt="user"/>
 						<p className="rounded-xl">{item.message}</p>
 					</div>
 				))}
 
-				<div className="w-full flex h-15 bg-[#fff3cc] justify-center items-center rounded-lg">
+				<div className="mt-auto w-full flex h-15 bg-[#fff3cc] justify-center items-center rounded-lg">
 					<textarea className="w-full bg-[#fff3cc] pr-12 h-full rounded-lg"/>
 					<SendHorizontal />
 				</div>
-				</>
+				</div>
 
 				) : <p className="flex h-full justify-center items-center">No chat selected</p>
 			}
