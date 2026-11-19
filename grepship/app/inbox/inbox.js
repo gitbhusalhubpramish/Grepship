@@ -1,6 +1,7 @@
 "use client"
 import {useEffect, useState} from "react"
 import {socket} from "@/lib/socket"
+import {SendHorizontal} from "lucide-react"
 
 export default function Inbox(){
 	const [menu, setmenu] = useState([])
@@ -77,8 +78,9 @@ export default function Inbox(){
 					</div>
 				))}
 
-				<div className="w-full flex">
-					<input className="w-full"/>
+				<div className="w-full flex h-15 bg-[#fff3cc] justify-center items-center rounded-lg">
+					<textarea className="w-full bg-[#fff3cc] pr-12 h-full rounded-lg"/>
+					<SendHorizontal />
 				</div>
 				</>
 
