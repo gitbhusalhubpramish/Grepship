@@ -30,7 +30,16 @@ def new_msg(data):
 		print("auth", response)
 		return {"status":"error", "message": "Unauthorized"}
 	
-	mongo.db.chats.update_one({"participants": {"$all": [response["username"], reciver]}}, {"$push": {"messages": {"message":message, "time":data.time, "sender":response["username"], "Isread": False}}}, upsert=True)
+	newmsg = {"message": message, "time": data.get("time"), "sender": response["username"], "Isread": False}
+
+	chat = mongo.db.chats.find_one({"participants": {"$all": [response["username"], reciver]}})
+
+	if chat:
+		mongo.db.chats.update_one({"_id": chat["_id"]}, {"$push": {"messages": newmsg}})
+	else:
+		mongo.db.chats.insert_one({"participants": [response["username"], reciver], "message": [newmsg]})
+
+#	mongo.db.chats.update_one({"participants": {"$all": [response["username"], reciver]}}, {"$push": {"messages": {"message":message, "time":data.get("time"), "sender":response["username"], "Isread": False}}}, upsert=True)
 
 	mongo.db.user.update_one({"username": reciver}, {"$pull": {"friends": {"username": response["username"]}}})
 	mongo.db.user.update_one({"username": response["username"]}, {"$pull": {"friends": {"username": reciver}}})
@@ -77,5 +86,6 @@ def chat(username):
 	if current_user is None:
 		return {"error": "auth error"}, 401
 	cht = mongo.db.chats.find_one({"participants":{"$all": [current_user["username"], username]}})
+	print(cht)
 	return jsonify(cht or []), 200
 
