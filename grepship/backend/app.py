@@ -38,4 +38,4 @@ def create_app(): # Main function for all work
 app = create_app()
 
 if __name__ == '__main__':
-    app.run(port=int(os.getenv("PORT", 5000)), debug=True) # Debugger
+    socketio.run(app,port=int(os.getenv("PORT", 5000)), debug=True) # Debugger
