@@ -63,10 +63,11 @@ export default function Inbox(){
 	const sendmsg = ()=>{
 		socket.timeout(5000).emit("send_message", {msg}, (err, res) => {
 				if(err){
+					console.log(err)
 					alert("API connection error")
 				}
 				if (res?.status==="success"){
-					setinbox((prev)=> [...prev, {"sender": null, "message":msg}])
+					setinbox((prev)=> [...prev, {"reciver":chat, "message":msg}])
 					setmsg("")
 				}
 			}

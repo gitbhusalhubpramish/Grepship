@@ -2,5 +2,6 @@ import {io} from "socket.io-client"
 
 export const socket = io("http://localhost:5000", {
 	autoConnect:false,
-	withCredintials:true
+	withCredentials:true,
+	transports: ["polling", "websocket"]
 })

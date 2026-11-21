@@ -8,29 +8,36 @@ inb_bp = Blueprint("inbox", __name__, url_prefix="/api/inbox")
 
 @socketio.on("connect")
 def handel_connect():
+	print("connecting...")
 	session= request.cookies.get("session_id")
+	print(session)
 	user= auth_user_by_session(session)
 	if not user:
 		return False
-	join_room(user["username"])
+
 
 @socketio.on("send_message")
 def new_msg(data):
+	print("hey")
 	session = request.cookies.get("session_id")
+	print(session)
 	response = auth_user_by_session(session)
+	
+	reciver = data.get("reciver")
+	message= data.get("message")
 
 	if response is None:
 		print("auth", response)
 		return {"status":"error", "message": "Unauthorized"}
 	
-	mongo.db.chats.update_one({"participants": {"$all": [response["username"], data.reciver]}}, {"$push": {"messages": {"message":data.message, "time":data.time, "sender":response["username"], "Isread": False}}}, upsert=True)
+	mongo.db.chats.update_one({"participants": {"$all": [response["username"], reciver]}}, {"$push": {"messages": {"message":message, "time":data.time, "sender":response["username"], "Isread": False}}}, upsert=True)
 
-	mongo.db.user.update_one({"username": data.reciver}, {"$pull": {"friends": {"username": response["username"]}}})
-	mongo.db.user.update_one({"username": response["username"]}, {"$pull": {"friends": {"username": data.reciver}}})
+	mongo.db.user.update_one({"username": reciver}, {"$pull": {"friends": {"username": response["username"]}}})
+	mongo.db.user.update_one({"username": response["username"]}, {"$pull": {"friends": {"username": reciver}}})
 
-	mongo.db.usrdata.update_one({"username": data.reciver}, {"$push": {"chats": {"$each":[{"username": response["username"], "Isread":False}], "$position":0}}})
-	mongo.db.usrdata.update_one({"username": response["username"]}, {"$push": {"friends": {"$each": [{"username": data.reciver, "Isread": True}], "$position":0}}})
-	emit("new_message", {"username": response["username"], "message": data.message, "time": data.time})
+	mongo.db.usrdata.update_one({"username": reciver}, {"$push": {"chats": {"$each":[{"username": response["username"], "Isread":False}], "$position":0}}})
+	mongo.db.usrdata.update_one({"username": response["username"]}, {"$push": {"friends": {"$each": [{"username": reciver, "Isread": True}], "$position":0}}})
+	emit("new_message", {"username": response["username"], "message": message, "time": data.get("time")})
 
 	print("Success")
 

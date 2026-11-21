@@ -18,8 +18,6 @@ def create_app(): # Main function for all work
     #app.config[ "SECRET_KEY"] = os.getenv("SECRET_KEY")
     app.config["MONGO_URI"] = os.getenv("MONGODB_URI")
     mongo.init_app(app)
-    print(mongo)
-    print(mongo.db)
 
     CORS(app, origins=['http://localhost:3000'], supports_credentials=True)
     app.register_blueprint(auth_bp)
