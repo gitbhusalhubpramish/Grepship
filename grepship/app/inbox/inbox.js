@@ -66,6 +66,7 @@ export default function Inbox(){
 					alert("API connection error")
 				}
 				if (res?.status==="success"){
+					setinbox((prev)=> [...prev, {"sender": null, "message":msg}])
 					setmsg("")
 				}
 			}
