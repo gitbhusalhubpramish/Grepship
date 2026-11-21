@@ -6,10 +6,22 @@ from utils.auth import auth_user_by_session
 
 inb_bp = Blueprint("inbox", __name__, url_prefix="/api/inbox")
 
+@socketio.on("connect")
+def handel_connect():
+	session= request.cookies.get("session_id")
+	user= auth_user_by_session(session)
+	if not user:
+		return False
+	join_room(user["username"])
+
 @socketio.on("send_message")
 def new_msg(data):
 	session = request.cookies.get("session_id")
 	response = auth_user_by_session(session)
+
+	if response is None:
+		print("auth", response)
+		return {"status":"error", "message": "Unauthorized"}
 	
 	mongo.db.chats.update_one({"participants": {"$all": [response["username"], data.reciver]}}, {"$push": {"messages": {"message":data.message, "time":data.time, "sender":response["username"], "Isread": False}}}, upsert=True)
 
