@@ -9,6 +9,7 @@ export default function Inbox(){
 	const [option, setoption] = useState([])
 	const [chat, setchat] = useState(null)
 	const [showoption, setshowoption] = useState(false)
+	const [msg, setmsg] = useState("")
 
 	useEffect(()=>{
 		const fetchdata = async ()=>{
@@ -59,6 +60,16 @@ export default function Inbox(){
 		socket.on("new_message", (data)=>handelnewmsg(data))
 	})
 
+	const sendmsg = ()=>{
+		socket.connect()
+		if (socket.connected !== true){
+			alert("API connectin error")
+			return
+		}
+		socket.emit("send_message", msg)
+		setmsg("")
+	}
+
 	return (<div className="pt-50 p-20 flex gap-4 bg-[#FFF8E7] h-screen">
 		<div className="w-1/3 bg-[#FFFFFF] h-full border-1 border-[#e4dfc9] rounded-3xl p-5">
 			{menu ? menu.map(item =>(
@@ -70,7 +81,7 @@ export default function Inbox(){
 			)) : <p className="h-full w-full items-center flex justify-center">No messages sent or recived</p>}
 		</div>
 		<div className="flex-1 bg-[#FFFFFF] h-full border-1 border-[#e4dfc9] rounded-3xl p-5">
-			{chat!==null ? (
+			{chat!==null ?(
 				<div className="flex h-full flex-col">{inbox.map(item =>(
 					<div className={`flex ${item.sender==chat} ? "" : "flex-row-reverse"`}>
 						<img src={inbox.profilepic} alt="user"/>
@@ -79,8 +90,8 @@ export default function Inbox(){
 				))}
 
 				<div className="mt-auto w-full flex h-10 bg-[#fff3cc] justify-center items-center rounded-lg focus-within:outline-2 outline-[#dfe3cc]">
-					<input type="text" className="w-full bg-[#fff3cc] focus:outline-none focus:ring-0 p-2 pr-12 h-full rounded-lg" placeholder="Write a message"/>
-					<SendHorizontal color="#025f5f"/>
+					<input type="text" className="w-full bg-[#fff3cc] focus:outline-none focus:ring-0 p-2 pr-12 h-full rounded-lg" placeholder="Write a message" value={msg} onChange={(e)=>setmsg(e.target.value)} onKeyDown={(e)=>{e.key==='Enter'? sendmsg() :null}}/>
+					<SendHorizontal color="#025f5f" className="cursor-pointer" onClick={sendmsg}/>
 				</div>
 				</div>
 
