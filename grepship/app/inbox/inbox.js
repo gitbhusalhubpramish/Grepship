@@ -61,13 +61,15 @@ export default function Inbox(){
 	})
 
 	const sendmsg = ()=>{
-		socket.connect()
-		if (socket.connected !== true){
-			alert("API connectin error")
-			return
-		}
-		socket.emit("send_message", msg)
-		setmsg("")
+		socket.timeout(5000).emit("send_message", {msg}, (err, res) => {
+				if(err){
+					alert("API connection error")
+				}
+				if (res?.status==="success"){
+					setmsg("")
+				}
+			}
+		)
 	}
 
 	return (<div className="pt-50 p-20 flex gap-4 bg-[#FFF8E7] h-screen">
