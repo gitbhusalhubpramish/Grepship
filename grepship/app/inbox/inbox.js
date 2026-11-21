@@ -78,9 +78,9 @@ export default function Inbox(){
 					</div>
 				))}
 
-				<div className="mt-auto w-full flex h-15 bg-[#fff3cc] justify-center items-center rounded-lg">
-					<textarea className="w-full bg-[#fff3cc] pr-12 h-full rounded-lg"/>
-					<SendHorizontal />
+				<div className="mt-auto w-full flex h-10 bg-[#fff3cc] justify-center items-center rounded-lg focus-within:outline-2 outline-[#dfe3cc]">
+					<input type="text" className="w-full bg-[#fff3cc] focus:outline-none focus:ring-0 p-2 pr-12 h-full rounded-lg" placeholder="Write a message"/>
+					<SendHorizontal color="#025f5f"/>
 				</div>
 				</div>
 
