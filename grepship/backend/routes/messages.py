@@ -53,6 +53,7 @@ def new_msg(data):
 	emit("new_message", {"username": reciver, "message": message, "time": data.get("time")}, to=reciver)
 
 	print("Success")
+	return {"status":"success"}
 
 @inb_bp.route("/search")
 def search():

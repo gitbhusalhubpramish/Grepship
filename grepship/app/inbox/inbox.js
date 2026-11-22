@@ -51,7 +51,9 @@ export default function Inbox(){
 	},[chat])
 
 	const handelnewmsg = (data)=>{
-		setinbox(prev=>[...(prev||[]), data])
+		if (data.username===chat){
+			setinbox(prev=>[...(prev||[]), data])
+		}
 		setmenu(prev=> prev.find(item => item.username === data.username) ? [{username:data.username, profilepic:data.profilepic, isunread:true}, ...prev.filter(item=> item.username !==  data.username)]: [{username:data.username, profilepic: data.profilepic, isunread:true}, ...prev])
 	}
 
