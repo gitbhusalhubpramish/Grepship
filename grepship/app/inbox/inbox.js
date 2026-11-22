@@ -63,7 +63,7 @@ export default function Inbox(){
 		if (data.username===chat){
 			setinbox(prev=>({...prev, message:[...(prev?.message || []), data]}))
 		}
-		setmenu(prev=> prev.find(item => item.username === data.username) ? [{username:data.username, profilepic:data.profilepic, isunread:true}, ...prev.filter(item=> item.username !==  data.username)]: [{username:data.username, profilepic: data.profilepic, isunread:true}, ...prev])
+		setmenu(prev=> prev.find(item => item.username === data.username) ? [{username:data.username, profilepic:data.profilepic, isunread:true}, ...prev.filter(item=> item.username !==  data.username)]: [{username:data.username, profilepic: data.profilepic, isread:true}, ...prev])
 	}
 
 	useEffect(()=>{
@@ -97,7 +97,7 @@ export default function Inbox(){
 				<div onClick={(e)=>setchat(item.username)} className="hover:cursor-pointer rounded-3xl h-14 p-2 flex gap-3 items-center bg-[#FFF1CC] hover:bg-[#FFEBC0] border border-[#E4DFC9] mb-5" key={item.username}>
 					<img className="h-10 rounded-full aspect-square" alt="user" src={item.profile_pic}/>
 					<p className="overflow-hidden flex-1 font-semibold">{item.username}</p>
-					{item.isunread ? <div className="bg-red-700 rounded-full w-2 h-2 mr-5 shrink-0"/> : <></>}
+					{!item.isread ? <div className="bg-red-700 rounded-full w-2 h-2 mr-5 shrink-0"/> : <></>}
 				</div>
 			)) : <p className="h-full w-full items-center flex justify-center">No messages sent or recived</p>}
 		</div>

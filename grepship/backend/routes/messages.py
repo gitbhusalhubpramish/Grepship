@@ -45,11 +45,12 @@ def new_msg(data):
 
 #	mongo.db.chats.update_one({"participants": {"$all": [response["username"], reciver]}}, {"$push": {"messages": {"message":message, "time":data.get("time"), "sender":response["username"], "Isread": False}}}, upsert=True)
 
-	mongo.db.user.update_one({"username": reciver}, {"$pull": {"friends": {"username": response["username"]}}})
-	mongo.db.user.update_one({"username": response["username"]}, {"$pull": {"friends": {"username": reciver}}})
+	#mongo.db.user.update_one({"username": reciver}, {"$pull": {"friends": {"username": response["username"]}}})
+	#mongo.db.user.update_one({"username": response["username"]}, {"$pull": {"friends": {"username": reciver}}})
 
-	mongo.db.usrdata.update_one({"username": reciver}, {"$push": {"chats": {"$each":[{"username": response["username"], "Isread":False}], "$position":0}}})
-	mongo.db.usrdata.update_one({"username": response["username"]}, {"$push": {"friends": {"$each": [{"username": reciver, "Isread": True}], "$position":0}}})
+	mongo.db.users.update_one({"username": reciver}, {"$push": {"friends": {"$each":[{"username": response["username"], "Isread":False}], "$position":0}}})
+	mongo.db.users.update_one({"username": response["username"]}, {"$push": {"friends": {"$each": [{"username": reciver, "Isread": True}], "$position":0}}})
+
 	emit("new_message", {"username": reciver, "message": message, "time": data.get("time")}, to=reciver)
 
 	print("Success")
@@ -80,7 +81,10 @@ def menu():
 	print(current_user)
 	friends = mongo.db.users.find_one({"username": current_user["username"]}, {"friends":1, "_id":0})
 	print(friends["friends"])
-	friends_data = mongo.db.users.find({"username":{"$in": list(friends["friends"] or [])}}, {"_id":0, "username":1, "profile_pic":1})
+	friends_data = mongo.db.users.find({"username":{"$in": [f["username"] for f in friends.get("friends", [])]}}, {"_id":0, "username":1, "profile_pic":1})
+	isreadmap= {f["username"]: f["isread"] for f in friends.get("friends", [])}
+	for friend in friends_data:
+		friend["isread"] = isreadmap.get(friend["username"], False)
 	print(friends_data)
 	return jsonify(friends_data), 200
 
