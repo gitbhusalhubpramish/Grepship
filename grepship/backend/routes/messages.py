@@ -22,8 +22,10 @@ def new_msg(data):
 	session = request.cookies.get("session_id")
 	print(session)
 	response = auth_user_by_session(session)
+	print(data)
 	
 	reciver = data.get("reciver")
+	print(reciver)
 	message= data.get("message")
 
 	if response is None:
@@ -33,9 +35,10 @@ def new_msg(data):
 	newmsg = {"message": message, "time": data.get("time"), "sender": response["username"], "Isread": False}
 
 	chat = mongo.db.chats.find_one({"participants": {"$all": [response["username"], reciver]}})
+	print(chat)
 
 	if chat:
-		mongo.db.chats.update_one({"_id": chat["_id"]}, {"$push": {"messages": newmsg}})
+		mongo.db.chats.update_one({"_id": chat["_id"]}, {"$push": {"message": newmsg}})
 	else:
 		mongo.db.chats.insert_one({"participants": [response["username"], reciver], "message": [newmsg]})
 

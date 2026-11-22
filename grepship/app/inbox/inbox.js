@@ -52,7 +52,7 @@ export default function Inbox(){
 
 	const handelnewmsg = (data)=>{
 		setinbox(prev=>[...prev, data])
-		setmenu(prev=> prev.fomd(item => item.username === data.username) ? [{username:data.username, profilepic:data.profilepic, isunread:true}, ...prev.filter(item=> item.username !==  data.username)]: [{username:data.username, profilepic: data.profilepic, isunread:true}, ...prev])
+		setmenu(prev=> prev.find(item => item.username === data.username) ? [{username:data.username, profilepic:data.profilepic, isunread:true}, ...prev.filter(item=> item.username !==  data.username)]: [{username:data.username, profilepic: data.profilepic, isunread:true}, ...prev])
 	}
 
 	useEffect(()=>{
@@ -61,7 +61,7 @@ export default function Inbox(){
 	})
 
 	const sendmsg = ()=>{
-		socket.timeout(5000).emit("send_message", {msg}, (err, res) => {
+		socket.timeout(5000).emit("send_message", {"message":msg, "reciver": chat}, (err, res) => {
 				if(err){
 					console.log(err)
 					alert("API connection error")
@@ -86,8 +86,8 @@ export default function Inbox(){
 		</div>
 		<div className="flex-1 bg-[#FFFFFF] h-full border-1 border-[#e4dfc9] rounded-3xl p-5">
 			{chat!==null ?(
-				<div className="flex h-full flex-col">{inbox.map(item =>(
-					<div className={`flex ${item.sender==chat} ? "" : "flex-row-reverse"`}>
+				<div className="flex h-full flex-col">{inbox.map((item,index) =>(
+					<div key={item._id || index} className={`flex ${item.sender===chat} ? "" : "flex-row-reverse"`}>
 						<img src={inbox.profilepic} alt="user"/>
 						<p className="rounded-xl">{item.message}</p>
 					</div>
