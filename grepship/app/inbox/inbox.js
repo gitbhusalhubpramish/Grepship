@@ -38,7 +38,8 @@ export default function Inbox(){
 				}
 				const res = await fetch(`/api/inbox/${chat}`)
 				const data = await res.json()
-				setinbox(data.message)
+				setinbox({"message":data.message.message, "profilepic": data.profile_pic.profile_pic})
+				console.log(inbox)
 				console.log(data)
 				const opres = await fetch(`/api/profile/${chat}`)
 				const opdata = await opres.json()
@@ -88,12 +89,15 @@ export default function Inbox(){
 		</div>
 		<div className="flex-1 bg-[#FFFFFF] h-full border-1 border-[#e4dfc9] rounded-3xl p-5">
 			{chat!==null ?(
-				<div className="flex h-full flex-col">{inbox?.map((item,index) =>(
-					<div key={item._id || index} className={`flex ${item.sender===chat} ? "" : "flex-row-reverse"`}>
-						<img src={inbox.profilepic} alt="user"/>
-						<p className="rounded-xl">{item.message}</p>
+				<div className="flex h-full flex-col">
+					<div className="w-full overflow-y-auto">{inbox?.message?.map((item,index) =>(
+						<div key={item._id || index} className={`flex items-center ${item.sender===chat ? "" : "flex-row-reverse"} m-5`}>
+							<img src={inbox.profilepic} alt="user" className="h-10 w-10 rounded-full"/>
+							<p className="rounded-xlmax-w-2/3 m-2 bg-[#d3d3ce] rounded-md p-2 rounded-br-none">{item.message}</p>
+						</div>
+					))}
 					</div>
-				))}
+				
 
 				<div className="mt-auto w-full flex h-10 bg-[#fff3cc] justify-center items-center rounded-lg focus-within:outline-2 outline-[#dfe3cc]">
 					<input type="text" className="w-full bg-[#fff3cc] focus:outline-none focus:ring-0 p-2 pr-12 h-full rounded-lg" placeholder="Write a message" value={msg} onChange={(e)=>setmsg(e.target.value)} onKeyDown={(e)=>{e.key==='Enter'? sendmsg() :null}}/>

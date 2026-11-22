@@ -91,6 +91,7 @@ def chat(username):
 	if current_user is None:
 		return {"error": "auth error"}, 401
 	cht = mongo.db.chats.find_one({"participants":{"$all": [current_user["username"], username]}})
-	print(cht)
-	return jsonify(cht or []), 200
+	pp = mongo.db.users.find_one({"username":username}, {"_id":0, "profile_pic":1})
+	print({"message":cht, "profile_pic":pp})
+	return jsonify({"message":cht, "profile_pic": pp} or []), 200
 
