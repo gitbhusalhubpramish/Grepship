@@ -14,6 +14,7 @@ def handel_connect():
 	user= auth_user_by_session(session)
 	if not user:
 		return False
+	join_room(user["username"])
 
 
 @socketio.on("send_message")
@@ -49,7 +50,7 @@ def new_msg(data):
 
 	mongo.db.usrdata.update_one({"username": reciver}, {"$push": {"chats": {"$each":[{"username": response["username"], "Isread":False}], "$position":0}}})
 	mongo.db.usrdata.update_one({"username": response["username"]}, {"$push": {"friends": {"$each": [{"username": reciver, "Isread": True}], "$position":0}}})
-	emit("new_message", {"username": reciver, "message": message, "time": data.get("time")})
+	emit("new_message", {"username": reciver, "message": message, "time": data.get("time")}, to=reciver)
 
 	print("Success")
 
