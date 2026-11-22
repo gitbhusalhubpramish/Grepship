@@ -1,5 +1,5 @@
 "use client"
-import {useEffect, useState} from "react"
+import {useEffect, useState, useRef} from "react"
 import {socket} from "@/lib/socket"
 import {SendHorizontal} from "lucide-react"
 
@@ -10,6 +10,14 @@ export default function Inbox(){
 	const [chat, setchat] = useState(null)
 	const [showoption, setshowoption] = useState(false)
 	const [msg, setmsg] = useState("")
+	const chatref = useRef(null)
+	
+	useEffect(()=>{
+		if (!socket.connected){
+			socket.disconnect()
+			socket.connect()
+		}
+	})
 
 	useEffect(()=>{
 		const fetchdata = async ()=>{
@@ -53,7 +61,7 @@ export default function Inbox(){
 
 	const handelnewmsg = (data)=>{
 		if (data.username===chat){
-			setinbox(prev=>[...(prev||[]), data])
+			setinbox(prev=>({...prev, message:[...(prev?.message || []), data]}))
 		}
 		setmenu(prev=> prev.find(item => item.username === data.username) ? [{username:data.username, profilepic:data.profilepic, isunread:true}, ...prev.filter(item=> item.username !==  data.username)]: [{username:data.username, profilepic: data.profilepic, isunread:true}, ...prev])
 	}
@@ -62,6 +70,12 @@ export default function Inbox(){
 		socket.connect()
 		socket.on("new_message", (data)=>handelnewmsg(data))
 	})
+	
+	useEffect(()=>{
+		if (chatref.current){
+			chatref.current.scrollTop = chatref.current.scrollHeight
+		}
+	}, [inbox])
 
 	const sendmsg = ()=>{
 		socket.timeout(5000).emit("send_message", {"message":msg, "reciver": chat, "time": new Date()}, (err, res) => {
@@ -70,7 +84,7 @@ export default function Inbox(){
 					alert("API connection error")
 				}
 				if (res?.status==="success"){
-					setinbox((prev)=> [...prev, {"reciver":chat, "message":msg}])
+					setinbox((prev)=> ({ ...prev, message:[...(prev?.message || []), {"reciver":chat, "message":msg}]}))
 					setmsg("")
 				}
 			}
@@ -90,7 +104,7 @@ export default function Inbox(){
 		<div className="flex-1 bg-[#FFFFFF] h-full border-1 border-[#e4dfc9] rounded-3xl p-5">
 			{chat!==null ?(
 				<div className="flex h-full flex-col">
-					<div className="w-full overflow-y-auto">{inbox?.message?.map((item,index) =>(
+					<div ref={chatref} className="w-full overflow-y-auto">{inbox?.message?.map((item,index) =>(
 						<div key={item._id || index} className={`flex items-center ${item.sender===chat ? "" : "flex-row-reverse"} m-5`}>
 							<img src={inbox.profilepic} alt="user" className="h-10 w-10 rounded-full"/>
 							<p className="rounded-xlmax-w-2/3 m-2 bg-[#d3d3ce] rounded-md p-2 rounded-br-none">{item.message}</p>
