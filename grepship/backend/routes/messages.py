@@ -49,7 +49,7 @@ def new_msg(data):
 
 	mongo.db.usrdata.update_one({"username": reciver}, {"$push": {"chats": {"$each":[{"username": response["username"], "Isread":False}], "$position":0}}})
 	mongo.db.usrdata.update_one({"username": response["username"]}, {"$push": {"friends": {"$each": [{"username": reciver, "Isread": True}], "$position":0}}})
-	emit("new_message", {"username": response["username"], "message": message, "time": data.get("time")})
+	emit("new_message", {"username": reciver, "message": message, "time": data.get("time")})
 
 	print("Success")
 
