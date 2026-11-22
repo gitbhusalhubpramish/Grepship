@@ -107,7 +107,7 @@ export default function Inbox(){
 					<div ref={chatref} className="w-full overflow-y-auto">{inbox?.message?.map((item,index) =>(
 						<div key={item._id || index} className={`flex items-center ${item.sender===chat ? "" : "flex-row-reverse"} m-5`}>
 							<img src={inbox.profilepic} alt="user" className="h-10 w-10 rounded-full"/>
-							<p className="rounded-xlmax-w-2/3 m-2 bg-[#d3d3ce] rounded-md p-2 rounded-br-none">{item.message}</p>
+							<p className={`rounded-xlmax-w-2/3 m-2 bg-[#d3d3ce] rounded-md p-2 ${item.sender===chat? "rounded-bl-none" : "rounded-br-none"}`}>{item.message}</p>
 						</div>
 					))}
 					</div>
