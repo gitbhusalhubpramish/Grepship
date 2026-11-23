@@ -103,5 +103,7 @@ def chat(username):
 	cht = mongo.db.chats.find_one({"participants":{"$all": [current_user["username"], username]}})
 	pp = mongo.db.users.find_one({"username":username}, {"_id":0, "profile_pic":1})
 	print({"message":cht, "profile_pic":pp})
+	mongo.db.users.update_one({"username": current_user["username"], "friends.username": username}, {"$set": {"friends.$.isread": True}})
+	mongo.db.chats.update_one({"participants": {"$all": [current_user["username"], username]}}, {"$set": {"message.$[msg].Isread": True}}, array_filters=[{"msg.sender": username, "msg.Isread": False}])
 	return jsonify({"message":cht, "profile_pic": pp} or []), 200
 
