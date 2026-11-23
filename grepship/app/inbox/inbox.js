@@ -59,9 +59,11 @@ export default function Inbox(){
 		fetchdata()
 	},[chat])
 
-	const handelnewmsg = (data)=>{
+	const handelnewmsg = async (data)=>{
 		if (data.username===chat){
 			setinbox(prev=>({...prev, message:[...(prev?.message || []), data]}))
+			const mark = await fetch(`/api/${chat}/mark`)
+			console.log(mark)
 		}
 		setmenu(prev=> prev.find(item => item.username === data.username) ? [{username:data.username, profilepic:data.profilepic, isunread:true}, ...prev.filter(item=> item.username !==  data.username)]: [{username:data.username, profilepic: data.profilepic, isread:true}, ...prev])
 	}

@@ -107,3 +107,13 @@ def chat(username):
 	mongo.db.chats.update_one({"participants": {"$all": [current_user["username"], username]}}, {"$set": {"message.$[msg].Isread": True}}, array_filters=[{"msg.sender": username, "msg.Isread": False}])
 	return jsonify({"message":cht, "profile_pic": pp} or []), 200
 
+@inb_bp.route("/<username>/mark")
+def mark(username):
+	session = request.cookies.get("session_id")
+	current_user = auth_user_by_session(session)
+	if current_user is None:
+		return {"error": "auth error"}, 401
+	mongo.db.users.update_one({"username": current_user["username"], "friends.username": username}, {"$set": {"friends.$.isread": True}})
+	mongo.db.chats.update_one({"participants": {"$all": [current_user["username"], username]}}, {"$set": {"message.$[msg].Isread": True}}, array_filters=[{"msg.sender": username, "msg.Isread": False}])
+
+	return jsonify({"success": True}), 200
