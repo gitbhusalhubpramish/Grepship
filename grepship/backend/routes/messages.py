@@ -48,8 +48,8 @@ def new_msg(data):
 	#mongo.db.user.update_one({"username": reciver}, {"$pull": {"friends": {"username": response["username"]}}})
 	#mongo.db.user.update_one({"username": response["username"]}, {"$pull": {"friends": {"username": reciver}}})
 
-	mongo.db.users.update_one({"username": reciver}, {"$push": {"friends": {"$each":[{"username": response["username"], "Isread":False}], "$position":0}}})
-	mongo.db.users.update_one({"username": response["username"]}, {"$push": {"friends": {"$each": [{"username": reciver, "Isread": True}], "$position":0}}})
+	mongo.db.users.update_one({"username": reciver, "friends.username":{"$ne": response["username"]}}, {"$push": {"friends": {"$each":[{"username": response["username"], "isread":False}], "$position":0}}})
+	mongo.db.users.update_one({"username": response["username"], "friends.username": {"$ne": reciver}}, {"$push": {"friends": {"$each": [{"username": reciver, "isread": True}], "$position":0}}})
 
 	emit("new_message", {"username": reciver, "message": message, "time": data.get("time")}, to=reciver)
 
@@ -81,11 +81,17 @@ def menu():
 	print(current_user)
 	friends = mongo.db.users.find_one({"username": current_user["username"]}, {"friends":1, "_id":0})
 	print(friends["friends"])
-	friends_data = mongo.db.users.find({"username":{"$in": [f["username"] for f in friends.get("friends", [])]}}, {"_id":0, "username":1, "profile_pic":1})
+	print(friends.get("friends"))
+	print(type(friends.get("friends")))
+	print(type(friends.get("friends")[0]))
+	print("f username:",list(f["username"] for f in friends.get("friends",[])))
+	friends_data = list(mongo.db.users.find({"username":{"$in": [f["username"] for f in friends.get("friends", [])]}}, {"_id":0, "username":1, "profile_pic":1}))
+	print(list(friends_data))
 	isreadmap= {f["username"]: f["isread"] for f in friends.get("friends", [])}
+	print(isreadmap)
 	for friend in friends_data:
 		friend["isread"] = isreadmap.get(friend["username"], False)
-	print(friends_data)
+	print(list(friends_data))
 	return jsonify(friends_data), 200
 
 @inb_bp.route("/<username>")
