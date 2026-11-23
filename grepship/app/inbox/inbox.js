@@ -57,6 +57,7 @@ export default function Inbox(){
 			}
 		}
 		fetchdata()
+		setmenu(prev=>prev.map(item=>item.username===chat? {...item, isread: true}: item))
 	},[chat])
 
 	const handelnewmsg = async (data)=>{
@@ -88,6 +89,7 @@ export default function Inbox(){
 				if (res?.status==="success"){
 					setinbox((prev)=> ({ ...prev, message:[...(prev?.message || []), {"reciver":chat, "message":msg}]}))
 					setmsg("")
+					setinbox((prev)=>({...prev, message:prev.message.map(item=> ({...item, Isread:true}))}))
 				}
 			}
 		)
