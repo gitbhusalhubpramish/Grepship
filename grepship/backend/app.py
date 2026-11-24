@@ -6,6 +6,7 @@ import os
 from flask import Flask, jsonify 
 from routes.auth import auth_bp
 from routes.messages import inb_bp
+from routes.search import ser_bp
 from flask_socketio import SocketIO
 from extensions import mongo
 
@@ -22,6 +23,7 @@ def create_app(): # Main function for all work
     CORS(app, origins=['http://localhost:3000'], supports_credentials=True)
     app.register_blueprint(auth_bp)
     app.register_blueprint(inb_bp)
+    app.register_blueprint(ser_bp)
 
     @app.route("/api/health", methods=['GET'])
     def health_check():
