@@ -49,7 +49,11 @@ def new_msg(data):
 	#mongo.db.user.update_one({"username": response["username"]}, {"$pull": {"friends": {"username": reciver}}})
 
 	mongo.db.users.update_one({"username": reciver, "friends.username":{"$ne": response["username"]}}, {"$push": {"friends": {"$each":[{"username": response["username"], "isread":False}], "$position":0}}})
-	mongo.db.users.update_one({"username": response["username"], "friends.username": {"$ne": reciver}}, {"$push": {"friends": {"$each": [{"username": reciver, "isread": True}], "$position":0}}})
+	#mongo.db.users.update_one({"username": response["username"], "friends.username": reciver}, {"$set": {"friends.$.isread": True}})
+	#mongo.db.users.update_one({"username": response["username"], "friends.username": {"$ne": reciver}}, {"$push": {"friends": {"$each": [{"username": reciver, "isread": True}], "$position":0}}})
+
+	mongo.db.users.update_one({"username": reciver}, [{"$set": {"friends": {"$concatArrays": [[{"username": response["username"], "isread":False}], {"$filter": {"input": "$friends",  "as": "f", "cond":{"$ne":["$$f.username", response["username"]]}}}]}}}])
+	mongo.db.users.update_one({"username": response["username"]}, [{"$set": {"friends": {"$concatArrays": [[{"username": reciver, "isread":True}], {"$filter": {"input": "$friends",  "as": "f", "cond":{"$ne":["$$f.username", reciver]}}}]}}}])
 
 	emit("new_message", {"username": reciver, "message": message, "time": data.get("time")}, to=reciver)
 
