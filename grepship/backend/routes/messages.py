@@ -1,0 +1,123 @@
+from flask_socketio import emit, join_room
+from extensions import socketio, mongo
+import requests
+from flask import Blueprint, request, jsonify
+from utils.auth import auth_user_by_session
+
+inb_bp = Blueprint("inbox", __name__, url_prefix="/api/inbox")
+
+@socketio.on("connect")
+def handel_connect():
+	print("connecting...")
+	session= request.cookies.get("session_id")
+	print(session)
+	user= auth_user_by_session(session)
+	if not user:
+		return False
+	join_room(user["username"])
+
+
+@socketio.on("send_message")
+def new_msg(data):
+	print("hey")
+	session = request.cookies.get("session_id")
+	print(session)
+	response = auth_user_by_session(session)
+	print(data)
+	
+	reciver = data.get("reciver")
+	print(reciver)
+	message= data.get("message")
+
+	if response is None:
+		print("auth", response)
+		return {"status":"error", "message": "Unauthorized"}
+	
+	newmsg = {"message": message, "time": data.get("time"), "sender": response["username"], "Isread": False}
+
+	chat = mongo.db.chats.find_one({"participants": {"$all": [response["username"], reciver]}})
+	print(chat)
+
+	if chat:
+		mongo.db.chats.update_one({"_id": chat["_id"]}, {"$push": {"message": newmsg}})
+	else:
+		mongo.db.chats.insert_one({"participants": [response["username"], reciver], "message": [newmsg]})
+
+#	mongo.db.chats.update_one({"participants": {"$all": [response["username"], reciver]}}, {"$push": {"messages": {"message":message, "time":data.get("time"), "sender":response["username"], "Isread": False}}}, upsert=True)
+
+	#mongo.db.user.update_one({"username": reciver}, {"$pull": {"friends": {"username": response["username"]}}})
+	#mongo.db.user.update_one({"username": response["username"]}, {"$pull": {"friends": {"username": reciver}}})
+
+	mongo.db.users.update_one({"username": reciver, "friends.username":{"$ne": response["username"]}}, {"$push": {"friends": {"$each":[{"username": response["username"], "isread":False}], "$position":0}}})
+	#mongo.db.users.update_one({"username": response["username"], "friends.username": reciver}, {"$set": {"friends.$.isread": True}})
+	#mongo.db.users.update_one({"username": response["username"], "friends.username": {"$ne": reciver}}, {"$push": {"friends": {"$each": [{"username": reciver, "isread": True}], "$position":0}}})
+
+	mongo.db.users.update_one({"username": reciver}, [{"$set": {"friends": {"$concatArrays": [[{"username": response["username"], "isread":False}], {"$filter": {"input": "$friends",  "as": "f", "cond":{"$ne":["$$f.username", response["username"]]}}}]}}}])
+	mongo.db.users.update_one({"username": response["username"]}, [{"$set": {"friends": {"$concatArrays": [[{"username": reciver, "isread":True}], {"$filter": {"input": "$friends",  "as": "f", "cond":{"$ne":["$$f.username", reciver]}}}]}}}])
+
+	emit("new_message", {"username": reciver, "message": message, "time": data.get("time")}, to=reciver)
+
+	print("Success")
+	return {"status":"success"}
+
+@inb_bp.route("/search")
+def search():
+	query = request.args.get("q", "").strip()
+	session = request.cookies.get("session_id")
+	current_user = auth_user_by_session(session)
+
+	if not query:
+		return jsonify({"error": "empty query"}), 400
+	chats = mongo.db.chats.find({"$and":[{"participants":current_user}, {"participants":{"$regex": query, "$options": "i"}}]}, {"participants":1, "_id":0})
+	usernames = {user for chat in chats for user in chat["participants"]}
+	usernames.discard(current_user)
+	
+	users = mongo.db.users.find({"username":{"$in": list(usernames)}}, {"_id":0, "username":1, "profile_pic":1})
+
+	return jsonify({"users": users, "success":True, "ok":True}), 200
+
+@inb_bp.route("/menu")
+def menu():
+	session = request.cookies.get("session_id")
+	current_user = auth_user_by_session(session)
+	if current_user is None:
+		return {"error": "auth error"}, 401
+	print(current_user)
+	friends = mongo.db.users.find_one({"username": current_user["username"]}, {"friends":1, "_id":0})
+	print(friends["friends"])
+	print(friends.get("friends"))
+	print(type(friends.get("friends")))
+	print(type(friends.get("friends")[0]))
+	print("f username:",list(f["username"] for f in friends.get("friends",[])))
+	friends_data = list(mongo.db.users.find({"username":{"$in": [f["username"] for f in friends.get("friends", [])]}}, {"_id":0, "username":1, "profile_pic":1}))
+	print(list(friends_data))
+	isreadmap= {f["username"]: f["isread"] for f in friends.get("friends", [])}
+	print(isreadmap)
+	for friend in friends_data:
+		friend["isread"] = isreadmap.get(friend["username"], False)
+	print(list(friends_data))
+	return jsonify(friends_data), 200
+
+@inb_bp.route("/<username>")
+def chat(username):
+	session = request.cookies.get("session_id")
+	current_user = auth_user_by_session(session)
+	if current_user is None:
+		return {"error": "auth error"}, 401
+	cht = mongo.db.chats.find_one({"participants":{"$all": [current_user["username"], username]}})
+	pp = mongo.db.users.find_one({"username":username}, {"_id":0, "profile_pic":1})
+	print({"message":cht, "profile_pic":pp})
+	mongo.db.users.update_one({"username": current_user["username"], "friends.username": username}, {"$set": {"friends.$.isread": True}})
+	mongo.db.chats.update_one({"participants": {"$all": [current_user["username"], username]}}, {"$set": {"message.$[msg].Isread": True}}, array_filters=[{"msg.sender": username, "msg.Isread": False}])
+	return jsonify({"message":cht, "profile_pic": pp} or []), 200
+
+@inb_bp.route("/<username>/mark")
+def mark(username):
+	session = request.cookies.get("session_id")
+	current_user = auth_user_by_session(session)
+	if current_user is None:
+		return {"error": "auth error"}, 401
+	mongo.db.users.update_one({"username": current_user["username"], "friends.username": username}, {"$set": {"friends.$.isread": True}})
+	mongo.db.chats.update_one({"participants": {"$all": [current_user["username"], username]}}, {"$set": {"message.$[msg].Isread": True}}, array_filters=[{"msg.sender": username, "msg.Isread": False}])
+
+	return jsonify({"success": True}), 200

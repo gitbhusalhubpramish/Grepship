@@ -44,3 +44,9 @@ yarn-error.log*
 # OS
 .DS_Store
 *.pem
+
+#vim 
+
+*.swp
+*.swx
+*.swo
