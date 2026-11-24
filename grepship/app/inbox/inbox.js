@@ -109,11 +109,15 @@ export default function Inbox(){
 			{chat!==null ?(
 				<div className="flex h-full flex-col">
 					<div ref={chatref} className="w-full overflow-y-auto">{inbox?.message?.map((item,index) =>(
-						<div key={item._id || index} className={`flex items-center ${item.sender===chat ? "" : "flex-row-reverse"} m-5`}>
+						<div key={item._id||index} className="group">
+							<div className="hidden  text-sm h-3 text-gray-500 group-hover:block text-center">{new Date(item.time).toLocaleString(undefined, {year:"numeric", month:"short", day:"numeric", hour:"2-digit", minute:"2-digit"})}</div>
+
+						<div key={item._id || index} className={`flex items-center group ${item.sender===chat ? "" : "flex-row-reverse"} m-5`}>
 							<img src={inbox.profilepic} alt="user" className="h-10 w-10 rounded-full"/>
 							<p className={`rounded-xlmax-w-2/3 m-2 bg-[#d3d3ce] rounded-md p-2 ${item.sender===chat? "rounded-bl-none" : "rounded-br-none"}`}>{item.message}</p>
 
 							{item.sender===chat && item.Isread===false ? <div className="h-1 w-1 bg-red-600 rounded-full"></div> : ""}
+						</div>
 						</div>
 					))}
 					</div>
