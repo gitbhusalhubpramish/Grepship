@@ -1,4 +1,4 @@
 from flask import Blueprint, jsonify
-from extension import mongo
+from extensions import mongo
 
-ser_bp = Blueprint("search", __name__, url_previx="/api/search")
+ser_bp = Blueprint("search", __name__, url_prefix="/api/search")
