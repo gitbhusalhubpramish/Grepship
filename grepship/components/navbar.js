@@ -66,7 +66,7 @@ export default function Navbar(){
 			</div>
 			{login ? (
 				<div className="w-1/5 h-full flex justify-between items-cneter p-10 h-full">
-					<Link href="/">
+					<Link href="/inbox">
 						<button className="bg-[#e6a82e] text-[#26351f] hover:bg-[#f0b83d] px-4 p-2 rounded-xl cursor-pointer">Inbox</button>
 					</Link>
 					<div className="w-15 h-full rounded-lg flex items-center bg-[#022520]">
