@@ -5,6 +5,7 @@ export default function Navbar(){
 
 	const [profilepic, setprofilepic] = useState("/default_profile.png")
 	const [login, setlogin] = useState(false)
+	const [users, setusers] = useState(null)
 	useEffect(()=>{
 		async function loadSession(){
 			try {
@@ -31,8 +32,8 @@ export default function Navbar(){
 					<img src="/logo.png" className="h-full p-3"/>
 				</a>
 			</div>
-			<div className="flex items-center justify-center flex-1">
-				<input className="pl-3 pr-10 bg-[#35452C] rounded-xl w-full h-1/3" placeholder="Harvest Friend" type="text"/>
+			<div className="flex items-center justify-center flex-1 relative">
+				<input className="pl-3 pr-10 bg-[#35452C] rounded-xl w-full h-1/3 peer focus:outline-none focus:bg-[#454a3f]" placeholder="Grab Friend" type="text"/>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					className="w-5 h-5 relative  right-7 h-full flex items-center justify-center text-gray-400"
@@ -47,6 +48,10 @@ export default function Navbar(){
 						d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z"
 					/>
 				</svg>
+
+				<div className="w-full bg-gray-800 text-gray-400 z-10 absolute top-2/3 rounded-md px-4 py-2 peer-focus:block hidden">
+					{users ? users.map(user=>user) : "no result found"}
+				</div>
 			</div>
 			{login ? (
 				<div className="w-1/5 h-full flex justify-between items-cneter p-10 h-full">
