@@ -9,7 +9,7 @@ def search():
 	if not query:
 		return jsonify({"error": "empty query"}), 400
 	users = mongo.db.users.find({"username": {"$regex": query, "$options": "i"}}, {"_id":0, "username":1}).limit(10)
-	return jsonify(users)
+	return jsonify({"users":users})
 
 @ser_bp.route("/search")
 def searchlong():
@@ -18,4 +18,4 @@ def searchlong():
 		return jsonify({"error": "empty query"}), 400
 	users = mongo.db.users.find({"username": {"$regex": query, "$options": "i"}}, {"_id":0, "username":1, "profile_pic":1})
 
-	return jsonify(users)
+	return jsonify({"users":users})

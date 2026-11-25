@@ -24,6 +24,17 @@ export default function Navbar(){
 		}
 		loadSession()
 	}, [])
+	
+	const handelquery= async (q)=>{
+		if (q){
+			const res = await fetch(`/api/search/?q=${q}`)
+			const usr = await res.json()
+			setusers(usr.users)
+		}
+		else{
+			setusers(null)
+		}
+	}
 
 	return (
 		<nav className="flex fixed top-0 left-0 right-0 h-30  bg-[#26351F] color-[#FFF8E7]">
@@ -33,7 +44,7 @@ export default function Navbar(){
 				</a>
 			</div>
 			<div className="flex items-center justify-center flex-1 relative">
-				<input className="pl-3 pr-10 bg-[#35452C] rounded-xl w-full h-1/3 peer focus:outline-none focus:bg-[#454a3f]" placeholder="Grab Friend" type="text"/>
+				<input className="pl-3 pr-10 bg-[#35452C] rounded-xl w-full h-1/3 peer focus:outline-none focus:bg-[#454a3f]" placeholder="Grab Friend" type="text" onChange={(e)=> handelquery(e.target.value)}/>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					className="w-5 h-5 relative  right-7 h-full flex items-center justify-center text-gray-400"
@@ -49,9 +60,9 @@ export default function Navbar(){
 					/>
 				</svg>
 
-				<div className="w-full bg-gray-800 text-gray-400 z-10 absolute top-2/3 rounded-md px-4 py-2 peer-focus:block hidden">
-					{users ? users.map(user=>user) : "no result found"}
-				</div>
+				{users !==null ? (<div className="w-full bg-gray-800 text-gray-400 z-10 absolute top-2/3 rounded-md px-4 py-2 peer-focus:block hidden">
+					{users ? users.map((user, index)=>(<div className="border-b-1 border-gray-700 p-1" key={index}>{user.username}</div>)) : "no result found"}
+				</div>) : ""}
 			</div>
 			{login ? (
 				<div className="w-1/5 h-full flex justify-between items-cneter p-10 h-full">
