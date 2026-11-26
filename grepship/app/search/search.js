@@ -25,7 +25,12 @@ export default function Search(){
 	}, [query])
 	return (
 		<div className="pt-30 h-screen w-screen bg-[#fff8e7]">
-			{users!==null ? users.map((user, index)=>(<div key={index}>{user.username}</div>)) : (<div className="text-3xl text-center w-full h-full flex justify-center items-center">No result found</div>)}
+			{users!==null ? (
+				<div className="py-30 px-50 flex flex-col justify-center items-center">
+					{users.map((user, index)=>(<div key={index} className="w-full rounded-xl h-15 bg-[#ffffff] border-2 border-[#e4dfc9] flex items-center">{user.username}</div>))}
+				</div>
+			) : (<div className="text-3xl text-center w-full h-full flex justify-center items-center">No result found</div>)
+			}
 		</div>
 	)
 }
