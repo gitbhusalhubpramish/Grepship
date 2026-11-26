@@ -1,11 +1,13 @@
 "use client"
 import Link from "next/link"
 import {useState, useEffect} from "react"
+import {redirect} from "next/navigation"
 export default function Navbar(){
 
 	const [profilepic, setprofilepic] = useState("/default_profile.png")
 	const [login, setlogin] = useState(false)
 	const [users, setusers] = useState(null)
+	const [query, setquery] = useState("")
 	useEffect(()=>{
 		async function loadSession(){
 			try {
@@ -26,6 +28,7 @@ export default function Navbar(){
 	}, [])
 	
 	const handelquery= async (q)=>{
+		setquery(q)
 		if (q){
 			const res = await fetch(`/api/search/?q=${q}`)
 			const usr = await res.json()
@@ -33,6 +36,12 @@ export default function Navbar(){
 		}
 		else{
 			setusers(null)
+		}
+	}
+
+	const handelSearch= (event)=>{
+		if (event.key==="Enter"){
+			redirect(`/search?q=${query}`)
 		}
 	}
 
@@ -44,7 +53,7 @@ export default function Navbar(){
 				</a>
 			</div>
 			<div className="flex items-center justify-center flex-1 relative">
-				<input className="pl-3 pr-10 bg-[#35452C] rounded-xl w-full h-1/3 peer focus:outline-none focus:bg-[#454a3f]" placeholder="Grab Friend" type="text" onChange={(e)=> handelquery(e.target.value)}/>
+				<input className="pl-3 pr-10 bg-[#35452C] rounded-xl w-full h-1/3 peer focus:outline-none focus:bg-[#454a3f]" placeholder="Grab Friend" type="text" onChange={(e)=> handelquery(e.target.value)} value={query} onKeyDown={handelSearch}/>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					className="w-5 h-5 relative  right-7 h-full flex items-center justify-center text-gray-400"
@@ -61,7 +70,7 @@ export default function Navbar(){
 				</svg>
 
 				{users !==null ? (<div className="w-full bg-gray-800 text-gray-400 z-10 absolute top-2/3 rounded-md px-4 py-2 peer-focus:block hidden">
-					{users ? users.map((user, index)=>(<div className="border-b-1 border-gray-700 p-1" key={index}>{user.username}</div>)) : "no result found"}
+					{users ? users.map((user, index)=>(<div className="border-b-1 border-gray-700 p-1 cursor-pointer hover:bg-gray-700 rounded-sm" onMouseDown={()=>setquery(user.username)} key={index}>{user.username}</div>)) : "no result found"}
 				</div>) : ""}
 			</div>
 			{login ? (
