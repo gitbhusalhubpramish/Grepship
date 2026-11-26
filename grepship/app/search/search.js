@@ -22,9 +22,9 @@ export default function Search(){
 		}
 		fetchdata()
 		
-	}, [])
+	}, [query])
 	return (
-		<div className="pt-10 h-screen w-screen bg-[#fff8e7]">
+		<div className="pt-30 h-screen w-screen bg-[#fff8e7]">
 			{users!==null ? users.map((user, index)=>(<div key={index}>{user.username}</div>)) : (<div className="text-3xl text-center w-full h-full flex justify-center items-center">No result found</div>)}
 		</div>
 	)
