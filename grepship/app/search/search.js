@@ -1,6 +1,7 @@
 "use client"
 import {useSearchParams} from "next/navigation"
 import {useState, useEffect} from "react"
+import {UserPlus} from "lucide-react"
 
 export default function Search(){
 	const searchParams= useSearchParams()
@@ -26,8 +27,14 @@ export default function Search(){
 	return (
 		<div className="pt-30 h-screen w-screen bg-[#fff8e7]">
 			{users!==null ? (
-				<div className="py-30 px-50 flex flex-col justify-center items-center">
-					{users.map((user, index)=>(<div key={index} className="w-full rounded-xl h-15 bg-[#ffffff] border-2 border-[#e4dfc9] flex items-center">{user.username}</div>))}
+				<div className="py-30 px-50 flex flex-col justify-center items-center gap-3">
+					{users.map((user, index)=>(
+						<div key={index} className="font-bond w-full rounded-xl h-15 bg-[#ffffff] border-2 border-[#e4dfc9] flex items-center">
+							<img className="h-10 m-2 rounded-full aspect-square" src={user.profile_pic} alt="user"/>
+							{user.username}
+							<UserPlus className="relative ml-auto m-5"/>
+						</div>
+					))}
 				</div>
 			) : (<div className="text-3xl text-center w-full h-full flex justify-center items-center">No result found</div>)
 			}
